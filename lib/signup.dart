@@ -1,3 +1,4 @@
+import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatefulWidget {
@@ -27,7 +28,10 @@ class _SignUpState extends State<SignUp> {
               padding: EdgeInsets.only(left: 29.0, top: 220.0),
               child: Text(
                 'Sign Up',
-                style: TextStyle(color: Colors.deepPurple, fontSize: 32, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                    color: Colors.deepPurple,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700),
               ),
             ),
             SingleChildScrollView(
@@ -135,53 +139,42 @@ class _SignUpState extends State<SignUp> {
                                   borderRadius: BorderRadius.circular(10),
                                 )),
                           ),
-                                SizedBox(
-                                  height: 20,
+                          SizedBox(
+                            height: 20,
+                          ),
+                          SizedBox(
+                              height: 50,
+                              width: 150,
+                              child: ButtonWidget(
+                                  title: "Sign Up",
+                                  onPress: () {
+                                    print("ok");
+                                  })),
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Already have an account",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 18),
                                 ),
-                                SizedBox(
-                                    height: 50,
-                                    width: 150,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        // Navigate to Home page
-                                      },
-                                      child: Text('Sign Up',
-                                        style: TextStyle(color: Colors.white, fontSize: 25),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.deepPurple,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(25.0),
-                                          )
-                                      ),
-                                    )
-                                ),
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Already have an account",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pushNamed(context, 'login');
-                                        },
-                                        child: Text(
-                                          'Login',
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                              decoration: TextDecoration.underline,
-                                              color: Color(0xff4c505b),
-                                              fontSize: 18),
-                                        ),
-                                      ),
-                                    ],
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, 'login');
+                                  },
+                                  child: Text(
+                                    'Login',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        color: Color(0xff4c505b),
+                                        fontSize: 18),
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     )

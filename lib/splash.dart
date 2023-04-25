@@ -1,35 +1,16 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.orange,
-      ),
-      home: SplashScreenPage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
 class SplashScreenPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body:
-        Stack(
+        body: Stack(
           children: [
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("Assets/Background.png"),
+                  image: AssetImage("assets/Background.png"),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -41,17 +22,17 @@ class SplashScreenPage extends StatelessWidget {
                 width: 100,
                 child: ElevatedButton(
                   onPressed: () {
-                    //Navigate to Sign up page
+                    Navigator.pushNamed(context, 'signup');
                   },
                   child: Text('Sign up',
-                      style: TextStyle(color:Colors.white,)
-                  ),
+                      style: TextStyle(
+                        color: Colors.white,
+                      )),
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.deepPurple,
+                      backgroundColor: Colors.deepPurple,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
-                      )
-                  ),
+                      )),
                 ),
               ),
             ),
@@ -62,17 +43,17 @@ class SplashScreenPage extends StatelessWidget {
                 width: 100,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to Log in page
+                    Navigator.pushNamed(context, 'login');
                   },
-                  child: Text('Log in',
+                  child: Text(
+                    'Log in',
                     style: TextStyle(color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.deepPurple,
+                      backgroundColor: Colors.deepPurple,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
-                      )
-                  ),
+                      )),
                 ),
               ),
             ),
@@ -126,4 +107,3 @@ class SplashScreenPage extends StatelessWidget {
     );
   }
 }
-
