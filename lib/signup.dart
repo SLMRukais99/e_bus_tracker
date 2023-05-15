@@ -1,4 +1,5 @@
 import 'package:e_bus_tracker/widget/button_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatefulWidget {
@@ -8,37 +9,44 @@ class SignUp extends StatefulWidget {
   State<SignUp> createState() => _SignUpState();
 }
 
+TextEditingController _usernameTextController = TextEditingController();
+TextEditingController _passwordTextController = TextEditingController();
+TextEditingController _confirmpasswordTextController = TextEditingController();
+TextEditingController _emailTextController = TextEditingController();
+
+
+var _isObscured1 = true;
+var _isObscured2 = true;
+
 class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('assets/signupback.jpg'), fit: BoxFit.cover),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        body: Stack(
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              padding: EdgeInsets.only(left: 29.0, top: 220.0),
-              child: Text(
-                'Sign Up',
-                style: TextStyle(
-                    color: Colors.deepPurple,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700),
-              ),
-            ),
-            SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.33),
-                child: Column(
+            Image.asset('assets/images/signupback.png'),
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: size.width * 0.08),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Sign Up',
+                      style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontSize: 32,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: size.height * 0.03,
+                ),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
@@ -46,8 +54,14 @@ class _SignUpState extends State<SignUp> {
                       child: Column(
                         children: [
                           TextField(
+                            controller: _usernameTextController,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
+                                suffixIcon: Padding(
+                                  padding:
+                                      EdgeInsetsDirectional.only(end: 10.0),
+                                  child: Icon(Icons.person),
+                                ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
@@ -70,8 +84,14 @@ class _SignUpState extends State<SignUp> {
                             height: 20,
                           ),
                           TextField(
+                            controller:_emailTextController ,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
+                                suffixIcon: Padding(
+                                  padding:
+                                      EdgeInsetsDirectional.only(end: 10.0),
+                                  child: Icon(Icons.mail),
+                                ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
@@ -94,8 +114,22 @@ class _SignUpState extends State<SignUp> {
                             height: 20,
                           ),
                           TextField(
+                            controller: _passwordTextController,
                             style: TextStyle(color: Colors.black),
+                            obscureText: _isObscured1,
                             decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                  padding:
+                                      EdgeInsetsDirectional.only(end: 10.0),
+                                  icon: _isObscured1
+                                      ? Icon(Icons.visibility)
+                                      : Icon(Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscured1 = !_isObscured1;
+                                    });
+                                  },
+                                ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
@@ -118,9 +152,22 @@ class _SignUpState extends State<SignUp> {
                             height: 20,
                           ),
                           TextField(
+                            controller: _confirmpasswordTextController,
                             style: TextStyle(color: Colors.black),
-                            obscureText: true,
+                            obscureText: _isObscured2,
                             decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                  padding:
+                                      EdgeInsetsDirectional.only(end: 10.0),
+                                  icon: _isObscured2
+                                      ? Icon(Icons.visibility)
+                                      : Icon(Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscured2 = !_isObscured2;
+                                    });
+                                  },
+                                ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
@@ -147,8 +194,18 @@ class _SignUpState extends State<SignUp> {
                               width: 150,
                               child: ButtonWidget(
                                   title: "Sign Up",
-                                  onPress: () {
-                                    print("ok");
+                                  onPress: () async{
+                                   await FirebaseAuth.instance
+                                        .createUserWithEmailAndPassword(
+                                            email: _emailTextController.text.trim(),
+                                            password: _passwordTextController.text)
+                                        .then((value) {
+                                      print("Created New Account");
+                                      Navigator.pushNamed(context, 'home');
+                                      print("ok");
+                                    }).onError((error, stackTrace) {
+                                      print("Error ${error.toString()}");
+                                    });
                                   })),
                           Container(
                             child: Row(
@@ -180,8 +237,11 @@ class _SignUpState extends State<SignUp> {
                     )
                   ],
                 ),
-              ),
-            ),
+                SizedBox(
+                  height: size.height * 0.03,
+                ),
+              ],
+            )
           ],
         ),
       ),

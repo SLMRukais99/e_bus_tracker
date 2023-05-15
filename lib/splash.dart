@@ -10,7 +10,7 @@ class SplashScreenPage extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("assets/Background.png"),
+                  image: AssetImage("assets/images/Background.png"),
                   fit: BoxFit.cover,
                 ),
               ),
