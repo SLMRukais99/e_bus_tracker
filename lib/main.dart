@@ -15,13 +15,14 @@ void main() async {
     debugShowCheckedModeBanner: false,
     initialRoute: 'splash',
     routes: {
+      
       'splash': (context) => SplashScreenPage(),
      'login': (context) => Login(),
       'signup': (context) => SignUp(),
       'home': (context) => HomeScreen(),
-
-       'user_profile_page': (context) => UserProfileScreen(),
       'bus_operator_profile_page': (context) => BusOperatorProfileScreen(),
+      'user_profile_page': (context) => UserProfileScreen(),
+      
     },
   ));
 }

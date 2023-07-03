@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,19 +7,19 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_storage/firebase_storage.dart';
 
 
-class BusOperatorProfileScreen extends StatefulWidget {
-  const BusOperatorProfileScreen({Key? key}) : super(key: key);
+
+class UserProfileScreen extends StatefulWidget {
+  const UserProfileScreen({Key? key}) : super(key: key);
 
   @override
-  State<BusOperatorProfileScreen> createState() => _BusOperatorProfileScreenState();
+  State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
+class _UserProfileScreenState extends State<UserProfileScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController homeController = TextEditingController();
   TextEditingController phoneNoController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController busnoController = TextEditingController();
 
   File? image; // Holds the selected image
   bool isLoading = false;
@@ -36,10 +35,12 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
     }
   }
 
+
+
 Future<String?> _uploadImage(File image) async {
   try {
     // Upload the image to Firebase Storage
-    final storageRef = FirebaseStorage.instance.ref().child('bus_operator_profile_images').child('image.jpg');
+    final storageRef = FirebaseStorage.instance.ref().child('user_profile_images').child('image.jpg');
     final uploadTask = storageRef.putFile(image);
 
     // Get the download URL
@@ -55,13 +56,11 @@ Future<String?> _uploadImage(File image) async {
   }
 }
 
-
   Future<void> _saveUserProfile() async {
     final name = nameController.text;
     final homeAddress = homeController.text;
     final phoneNumber = phoneNoController.text;
     final email = emailController.text;
-    final busNo = busnoController.text;
 
     if (!_validatePhoneNumber(phoneNumber)) {
       showSnackBar('Invalid phone number');
@@ -78,44 +77,33 @@ Future<String?> _uploadImage(File image) async {
     });
 
     try {
-      // Add the user profile data to Firestore
-      await FirebaseFirestore.instance.collection('userProfiles').add({
-        'name': name,
-        'homeAddress': homeAddress,
-        'phoneNumber': phoneNumber,
-        'email': email,
-        'busNo' : busNo,
-      });
-  String? downloadURL;
+      // Upload the image
+      String? downloadURL;
       if (image != null) {
         downloadURL = await _uploadImage(image!);
       }
 
       // Add the user profile data to Firestore
-      final busOperatorProfileData = {
+      final userProfileData = {
         'name': name,
         'homeAddress': homeAddress,
         'phoneNumber': phoneNumber,
         'email': email,
         'profileImageURL': downloadURL,
       };
- await FirebaseFirestore.instance.collection('busOperatorProfiles').add(busOperatorProfileData);
+ await FirebaseFirestore.instance.collection('userProfiles').add(userProfileData);
       
-
       setState(() {
         nameController.clear();
         homeController.clear();
         phoneNoController.clear();
         emailController.clear();
-        busnoController.clear();
         image = null;
         isLoading = false;
       });
 
-      // Navigate to the home screen
-      // Example: Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, 'home');
     } catch (e) {
-      // Handle any errors that occur during saving
       print('Error saving user profile: $e');
 
       setState(() {
@@ -149,7 +137,7 @@ Future<String?> _uploadImage(File image) async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bus Driver Profile'),
+        title: Text('User Profile'),
         backgroundColor: Colors.deepPurple,
       ),
       body: Container(
@@ -166,7 +154,6 @@ Future<String?> _uploadImage(File image) async {
                       alignment: Alignment.bottomCenter,
                       child: GestureDetector(
                         onTap: () {
-                          // Show image picker options
                           showModalBottomSheet(
                             context: context,
                             builder: (BuildContext context) {
@@ -295,21 +282,6 @@ Future<String?> _uploadImage(File image) async {
                         ),
                       ),
                     ),
-                      SizedBox(height: 16.0),
-                    TextField(
-                      controller: homeController,
-                      decoration: InputDecoration(
-                        labelText: 'Bus No',
-                        labelStyle: TextStyle(
-                          color: Colors.deepPurple,
-                        ),
-                        hintText: 'Enter your bus No',
-                        prefixIcon: Icon(
-                          Icons.home_outlined,
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                    ),
                     SizedBox(
                       height: 40,
                     ),
@@ -328,7 +300,6 @@ Future<String?> _uploadImage(File image) async {
                                 final email = emailController.text;
                                 if (_validatePhoneNumber(phoneNumber) && _validateEmail(email)) {
                                   await _saveUserProfile();
-                                  Navigator.pushReplacementNamed(context, 'home');
                                 } else {
                                   showSnackBar('Invalid phone number or email');
                                 }
@@ -337,7 +308,7 @@ Future<String?> _uploadImage(File image) async {
                           ),
                           AnimatedOpacity(
                             opacity: isLoading ? 1.0 : 0.0,
-                            duration: Duration(milliseconds: 400),
+                            duration: Duration(milliseconds: 200),
                             child: Container(
                               width: 50,
                               height: 50,
@@ -346,7 +317,7 @@ Future<String?> _uploadImage(File image) async {
                                 color: Colors.white,
                               ),
                               child: CircularProgressIndicator(
-                                strokeWidth: 2,
+                                strokeWidth: 3,
                                 valueColor: AlwaysStoppedAnimation<Color>(Colors.deepPurple),
                               ),
                             ),
