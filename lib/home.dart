@@ -13,14 +13,23 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
-          child: Text("Logout"),
-          onPressed: () {
-            FirebaseAuth.instance.signOut().then((value) {
-              print("Signed Out");
-              Navigator.pushNamed(context, 'login');
-            });
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Welcome to E-Bus Tracker",
+              style: TextStyle(color: Colors.black, fontSize: 18),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut().then((value) {
+                  print("Signed Out");
+                  Navigator.pushNamed(context, 'login');
+                });
+              },
+              child: Text("Logout"),
+            )
+          ],
         ),
       ),
     );

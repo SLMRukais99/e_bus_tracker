@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -10,7 +10,6 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
-TextEditingController _usernameTextController = TextEditingController();
 TextEditingController _passwordTextController = TextEditingController();
 TextEditingController _emailTextController = TextEditingController();
 
@@ -57,16 +56,27 @@ class _LoginState extends State<Login> {
                             margin: EdgeInsets.only(left: 35, right: 35),
                             child: Column(
                               children: [
-                                TextField(
+                                TextFormField(
                                   controller: _emailTextController,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return ("Please Enter Your Email");
+                                    }
+                                    if (!RegExp(
+                                            "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                        .hasMatch(value)) {
+                                      return ("Please Enter a valid Email");
+                                    }
+                                    return null;
+                                  },
                                   style: TextStyle(color: Colors.black),
                                   decoration: InputDecoration(
                                       suffixIcon: Padding(
                                         padding: EdgeInsetsDirectional.only(
                                             end: 10.0),
-                                        child: Icon(Icons.person),
+                                        child: Icon(Icons.mail),
                                       ),
-                                      hintText: "User Name",
+                                      hintText: "Email",
                                       fillColor: Colors.grey.shade100,
                                       filled: true,
                                       border: OutlineInputBorder(
@@ -76,8 +86,17 @@ class _LoginState extends State<Login> {
                                 SizedBox(
                                   height: 30,
                                 ),
-                                TextField(
+                                TextFormField(
                                   controller: _passwordTextController,
+                                  validator: (value) {
+                                    RegExp regex = new RegExp(r'^.{6,}$');
+                                    if (value!.isEmpty) {
+                                      return ("Password is required for login");
+                                    }
+                                    if (!regex.hasMatch(value)) {
+                                      return ("Please enter valid password(min. 6 character)");
+                                    }
+                                  },
                                   style: TextStyle(),
                                   obscureText: _isObscured,
                                   decoration: InputDecoration(
@@ -125,12 +144,13 @@ class _LoginState extends State<Login> {
                                           height: 50,
                                           width: 150,
                                           child: ElevatedButton(
-                                            onPressed: () async{
+                                            onPressed: () async {
                                               await FirebaseAuth.instance
                                                   .signInWithEmailAndPassword(
                                                       email:
                                                           _emailTextController
-                                                              .text.trim(),
+                                                              .text
+                                                              .trim(),
                                                       password:
                                                           _passwordTextController
                                                               .text)

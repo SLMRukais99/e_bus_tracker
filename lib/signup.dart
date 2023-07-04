@@ -14,6 +14,7 @@ TextEditingController _passwordTextController = TextEditingController();
 TextEditingController _confirmpasswordTextController = TextEditingController();
 TextEditingController _emailTextController = TextEditingController();
 
+
 var _isObscured1 = true;
 var _isObscured2 = true;
 
