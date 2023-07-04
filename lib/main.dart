@@ -1,6 +1,7 @@
 import 'package:e_bus_tracker/login.dart';
 import 'package:e_bus_tracker/signup.dart';
 import 'package:e_bus_tracker/splash.dart';
+import 'package:e_bus_tracker/tfa.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:e_bus_tracker/home.dart';
@@ -16,6 +17,7 @@ void main() async {
       'login': (context) => Login(),
       'signup': (context) => SignUp(),
       'home': (context) => HomeScreen(),
+      'tfa': (context) => VerifyAccountScreen(),
     },
   ));
 }
