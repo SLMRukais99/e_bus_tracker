@@ -13,7 +13,7 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: 'splash',
+    initialRoute: 'user_profile_page',
     routes: {
       
       'splash': (context) => SplashScreenPage(),
