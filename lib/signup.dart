@@ -14,7 +14,6 @@ TextEditingController _passwordTextController = TextEditingController();
 TextEditingController _confirmpasswordTextController = TextEditingController();
 TextEditingController _emailTextController = TextEditingController();
 
-
 var _isObscured1 = true;
 var _isObscured2 = true;
 
@@ -203,7 +202,7 @@ class _SignUpState extends State<SignUp> {
                                                 _passwordTextController.text)
                                         .then((value) {
                                       print("Created New Account");
-                                      Navigator.pushNamed(context, 'tfa');
+                                      Navigator.pushNamed(context, 'phone');
                                       print("ok");
                                     }).onError((error, stackTrace) {
                                       print("Error ${error.toString()}");
