@@ -15,7 +15,6 @@ TextEditingController _confirmpasswordTextController = TextEditingController();
 TextEditingController _emailTextController = TextEditingController();
 
 
-
 var _isObscured1 = true;
 var _isObscured2 = true;
 
@@ -85,7 +84,7 @@ class _SignUpState extends State<SignUp> {
                             height: 20,
                           ),
                           TextField(
-                            controller:_emailTextController ,
+                            controller: _emailTextController,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                                 suffixIcon: Padding(
@@ -195,14 +194,16 @@ class _SignUpState extends State<SignUp> {
                               width: 150,
                               child: ButtonWidget(
                                   title: "Sign Up",
-                                  onPress: () async{
-                                   await FirebaseAuth.instance
+                                  onPress: () async {
+                                    await FirebaseAuth.instance
                                         .createUserWithEmailAndPassword(
-                                            email: _emailTextController.text.trim(),
-                                            password: _passwordTextController.text)
+                                            email: _emailTextController.text
+                                                .trim(),
+                                            password:
+                                                _passwordTextController.text)
                                         .then((value) {
                                       print("Created New Account");
-                                      Navigator.pushNamed(context, 'home');
+                                      Navigator.pushNamed(context, 'tfa');
                                       print("ok");
                                     }).onError((error, stackTrace) {
                                       print("Error ${error.toString()}");
