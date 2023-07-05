@@ -4,6 +4,7 @@ import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/signup.dart';
 import 'package:e_bus_tracker/splash.dart';
 import 'package:e_bus_tracker/tfa.dart';
+import 'package:e_bus_tracker/verified.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:e_bus_tracker/home.dart';
@@ -24,6 +25,7 @@ void main() async {
       'bus_operator_profile_page': (context) => BusOperatorProfileScreen(),
       'user_profile_page': (context) => UserProfileScreen(),
       'phone': (context) => TwoFactorAuthScreen(),
+      'verified': (context) => VerificationScreen(),
     },
   ));
 }
