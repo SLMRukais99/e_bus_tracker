@@ -1,6 +1,9 @@
+import 'package:e_bus_tracker/tfa.dart';
 import 'package:flutter/material.dart';
 
 class TwoFactorAuthScreen extends StatelessWidget {
+  final TextEditingController _phoneNumberController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +29,7 @@ class TwoFactorAuthScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             TextField(
+              controller: _phoneNumberController,
               decoration: InputDecoration(
                 labelText: 'Phone Number',
               ),
@@ -33,8 +37,10 @@ class TwoFactorAuthScreen extends StatelessWidget {
             SizedBox(height: 24.0),
             ElevatedButton(
               onPressed: () {
-                // TODO: Add next button functionality
-                Navigator.pushNamed(context, 'tfa');
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      VerifyAccountScreen(_phoneNumberController.text),
+                ));
               },
               child: Text(
                 'Next',

@@ -1,7 +1,12 @@
+import 'package:e_bus_tracker/verified.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pinput/pinput.dart';
 
 class VerifyAccountScreen extends StatefulWidget {
-  const VerifyAccountScreen({Key? key}) : super(key: key);
+  final String phoneNumber;
+
+  VerifyAccountScreen(this.phoneNumber);
 
   @override
   _VerifyAccountScreenState createState() => _VerifyAccountScreenState();
@@ -9,18 +14,90 @@ class VerifyAccountScreen extends StatefulWidget {
 
 class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
   final List<TextEditingController> _codeControllers =
-      List.generate(4, (index) => TextEditingController());
+      List.generate(6, (index) => TextEditingController());
+  String _verificationCode = '';
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  void _verifyAccount() {
-    // TODO: Implement account verification logic
-    // Retrieve the entered code from _codeControllers and verify it
-    // You can use the entered code for further processing or validation
-    Navigator.pushNamed(context, 'verified');
+  final defaultPinTheme = PinTheme(
+    width: 56,
+    height: 56,
+    textStyle: TextStyle(
+      fontSize: 20,
+      color: Color.fromRGBO(30, 60, 87, 1),
+      fontWeight: FontWeight.w600,
+    ),
+    decoration: BoxDecoration(
+      border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
+      borderRadius: BorderRadius.circular(20),
+    ),
+  );
+
+  final focusedPinTheme = PinTheme(
+    width: 56,
+    height: 56,
+    textStyle: TextStyle(
+      fontSize: 20,
+      color: Color.fromRGBO(30, 60, 87, 1),
+      fontWeight: FontWeight.w600,
+    ),
+    decoration: BoxDecoration(
+      border: Border.all(color: Color.fromRGBO(114, 178, 238, 1)),
+      borderRadius: BorderRadius.circular(8),
+    ),
+  );
+
+  final submittedPinTheme = PinTheme(
+    width: 56,
+    height: 56,
+    textStyle: TextStyle(
+      fontSize: 20,
+      color: Color.fromRGBO(30, 60, 87, 1),
+      fontWeight: FontWeight.w600,
+    ),
+    decoration: BoxDecoration(
+      border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
+      borderRadius: BorderRadius.circular(20),
+      color: Color.fromRGBO(234, 239, 243, 1),
+    ),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    verifyPhone();
   }
 
-  void _resendCode() {
-    // TODO: Implement code resend logic
-    // Resend the verification code to the user's email
+  void verifyPhone() async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: '{widget.phoneNumber}',
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await FirebaseAuth.instance.signInWithCredential(credential).then(
+          (value) async {
+            if (value.user != null) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => VerificationScreen()),
+                (route) => false,
+              );
+            }
+          },
+        );
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        print(e.message);
+      },
+      codeSent: (verificationId, resendToken) {
+        setState(() {
+          _verificationCode = verificationId;
+        });
+      },
+      codeAutoRetrievalTimeout: (verificationId) {
+        setState(() {
+          _verificationCode = verificationId;
+        });
+      },
+      timeout: Duration(seconds: 60),
+    );
   }
 
   @override
@@ -52,66 +129,45 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
               ),
               SizedBox(height: 24.0),
               Text(
-                'Please enter the 4 digit code sent to your email/phone',
+                'Please enter the 6-digit code sent to your phone',
                 style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 24.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(4, (index) {
-                  return SizedBox(
-                    width: 60,
-                    child: TextField(
-                      controller: _codeControllers[index],
-                      keyboardType: TextInputType.number,
-                      maxLength: 1,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 24),
-                      decoration: InputDecoration(
-                        counterText: '',
-                        contentPadding: EdgeInsets.zero,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+              Container(
+                height: 56.0,
+                child: Pinput(
+                  defaultPinTheme: defaultPinTheme,
+                  focusedPinTheme: focusedPinTheme,
+                  submittedPinTheme: submittedPinTheme,
+                  length: 6,
+                  pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                  showCursor: true,
+                  onSubmitted: (pin) async {
+                    try {
+                      await FirebaseAuth.instance
+                          .signInWithCredential(
+                        PhoneAuthProvider.credential(
+                          verificationId: _verificationCode,
+                          smsCode: pin,
                         ),
-                      ),
-                    ),
-                  );
-                }),
-              ),
-              SizedBox(height: 16.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Didn't receive a pin?",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  TextButton(
-                    onPressed: _resendCode,
-                    child: Text(
-                      'Resend',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.deepPurple,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 24.0),
-              ElevatedButton(
-                onPressed: _verifyAccount,
-                child: Text(
-                  'Verify',
-                  style: TextStyle(color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.deepPurple,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                      )
+                          .then((value) async {
+                        if (value.user != null) {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => VerificationScreen()),
+                            (route) => false,
+                          );
+                        }
+                      });
+                    } catch (e) {
+                      FocusScope.of(context).unfocus();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Invalid OTP')),
+                      );
+                    }
+                  },
                 ),
               ),
             ],

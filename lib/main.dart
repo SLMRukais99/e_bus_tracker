@@ -21,7 +21,7 @@ void main() async {
       'login': (context) => Login(),
       'signup': (context) => SignUp(),
       'home': (context) => HomeScreen(),
-      'tfa': (context) => VerifyAccountScreen(),
+      'tfa': (context) => TwoFactorAuthScreen(),
       'bus_operator_profile_page': (context) => BusOperatorProfileScreen(),
       'user_profile_page': (context) => UserProfileScreen(),
       'phone': (context) => TwoFactorAuthScreen(),
