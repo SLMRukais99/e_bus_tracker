@@ -1,4 +1,5 @@
 import 'package:e_bus_tracker/bus_operator_profile_page.dart';
+import 'package:e_bus_tracker/forgot_password.dart';
 import 'package:e_bus_tracker/login.dart';
 import 'package:e_bus_tracker/signup.dart';
 import 'package:e_bus_tracker/splash.dart';
@@ -22,6 +23,7 @@ void main() async {
       'tfa': (context) => VerifyAccountScreen(),
       'bus_operator_profile_page': (context) => BusOperatorProfileScreen(),
       'user_profile_page': (context) => UserProfileScreen(),
+      'forgot_password' : (context)=> ForgotPasswordScreen(),
     },
   ));
 }
