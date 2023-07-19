@@ -32,7 +32,7 @@ class VerificationScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       // Add your button functionality here
-                      Navigator.pushNamed(context, 'home');
+                      Navigator.pushNamed(context, 'profileType');
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.deepPurple,
