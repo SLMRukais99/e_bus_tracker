@@ -1,4 +1,5 @@
 import 'package:e_bus_tracker/bus_operator_profile_page.dart';
+import 'package:e_bus_tracker/forgot_password.dart';
 import 'package:e_bus_tracker/login.dart';
 import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/ProfileType.dart';
@@ -10,24 +11,34 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:e_bus_tracker/home.dart';
 import 'package:e_bus_tracker/user_profile_page.dart';
+import 'package:e_bus_tracker/forgot_password.dart';
+import 'package:e_bus_tracker/password_reset_result_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: 'splash',
+    initialRoute: 'login',
     routes: {
-      'splash': (context) => SplashScreenPage(),
+    //  'splash': (context) => SplashScreenPage(),
       'login': (context) => Login(),
-      'signup': (context) => SignUp(),
+
+     'signup': (context) => SignUp(),
       'home': (context) => HomeScreen(),
       'tfa': (context) => VerifyAccountScreen(),
       'bus_operator_profile_page': (context) => BusOperatorProfileScreen(),
       'user_profile_page': (context) => UserProfileScreen(),
+
+
+      'forgot_password' : (context)=> ForgotPasswordScreen(),
+      'password_reset_result_screen' : (context) => PasswordResetResultScreen(),
+     
+
       'phone': (context) => TwoFactorAuthScreen(),
       'verified': (context) => VerificationScreen(),
       'profileType': (context) => ProfileTypeScreen(),
+
     },
   ));
 }

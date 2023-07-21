@@ -1,3 +1,4 @@
+import 'package:e_bus_tracker/forgot_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -127,13 +128,17 @@ class _LoginState extends State<Login> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       TextButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(context, 
+                                            MaterialPageRoute(builder: (context) => ForgotPasswordScreen())
+                                            );
+                                          },
                                           child: Text(
                                             'Forgot Password?',
                                             style: TextStyle(
                                               decoration:
                                                   TextDecoration.underline,
-                                              color: Color(0xff4c505b),
+                                              color: Color(0xFF673AB7),
                                               fontSize: 18,
                                             ),
                                           )),
