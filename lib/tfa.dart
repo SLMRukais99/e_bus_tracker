@@ -15,6 +15,7 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
     // TODO: Implement account verification logic
     // Retrieve the entered code from _codeControllers and verify it
     // You can use the entered code for further processing or validation
+    Navigator.pushNamed(context, 'verified');
   }
 
   void _resendCode() {
