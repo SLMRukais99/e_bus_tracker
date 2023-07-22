@@ -1,3 +1,4 @@
+import 'package:e_bus_tracker/home.dart';
 import 'package:flutter/material.dart';
 
 class VerificationScreen extends StatelessWidget {
@@ -32,7 +33,10 @@ class VerificationScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       // Add your button functionality here
-                      Navigator.pushNamed(context, 'home');
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()));
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.deepPurple,

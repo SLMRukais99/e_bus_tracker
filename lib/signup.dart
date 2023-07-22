@@ -1,3 +1,5 @@
+import 'package:e_bus_tracker/login.dart';
+import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -202,7 +204,11 @@ class _SignUpState extends State<SignUp> {
                                                 _passwordTextController.text)
                                         .then((value) {
                                       print("Created New Account");
-                                      Navigator.pushNamed(context, 'phone');
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TwoFactorAuthScreen()));
                                       print("ok");
                                     }).onError((error, stackTrace) {
                                       print("Error ${error.toString()}");
@@ -219,7 +225,11 @@ class _SignUpState extends State<SignUp> {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(context, 'login');
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Login()));
                                   },
                                   child: Text(
                                     'Login',
