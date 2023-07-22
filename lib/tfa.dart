@@ -1,27 +1,22 @@
+import 'package:e_bus_tracker/utils/utils.dart';
+import 'package:e_bus_tracker/verified.dart';
+import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:pinput/pinput.dart';
+import 'auth_provider/auth.dart';
 
 class VerifyAccountScreen extends StatefulWidget {
-  const VerifyAccountScreen({Key? key}) : super(key: key);
+  final String verificationId;
+  final String phone;
+  VerifyAccountScreen(
+      {super.key, required this.verificationId, required this.phone});
 
   @override
   _VerifyAccountScreenState createState() => _VerifyAccountScreenState();
 }
 
 class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
-  final List<TextEditingController> _codeControllers =
-      List.generate(4, (index) => TextEditingController());
-
-  void _verifyAccount() {
-    // TODO: Implement account verification logic
-    // Retrieve the entered code from _codeControllers and verify it
-    // You can use the entered code for further processing or validation
-    Navigator.pushNamed(context, 'verified');
-  }
-
-  void _resendCode() {
-    // TODO: Implement code resend logic
-    // Resend the verification code to the user's email
-  }
+  String? otpCode;
 
   @override
   Widget build(BuildContext context) {
@@ -52,32 +47,33 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
               ),
               SizedBox(height: 24.0),
               Text(
-                'Please enter the 4 digit code sent to your email/phone',
+                'Please enter the 6 digit code sent to your phone ${widget.phone}',
                 style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 24.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(4, (index) {
-                  return SizedBox(
-                    width: 60,
-                    child: TextField(
-                      controller: _codeControllers[index],
-                      keyboardType: TextInputType.number,
-                      maxLength: 1,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 24),
-                      decoration: InputDecoration(
-                        counterText: '',
-                        contentPadding: EdgeInsets.zero,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+              SizedBox(height: 20.0),
+              Pinput(
+                length: 6,
+                showCursor: true,
+                defaultPinTheme: PinTheme(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Colors.purple.shade200,
                     ),
-                  );
-                }),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                onCompleted: (value) {
+                  setState(() {
+                    otpCode = value;
+                  });
+                },
               ),
               SizedBox(height: 16.0),
               Row(
@@ -88,7 +84,7 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
                     style: TextStyle(fontSize: 16),
                   ),
                   TextButton(
-                    onPressed: _resendCode,
+                    onPressed: resendCode,
                     child: Text(
                       'Resend',
                       style: TextStyle(
@@ -100,24 +96,50 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 24.0),
-              ElevatedButton(
-                onPressed: _verifyAccount,
-                child: Text(
-                  'Verify',
-                  style: TextStyle(color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.deepPurple,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+              SizedBox(
+                height: 24.0,
               ),
+              SizedBox(
+                  height: 50,
+                  width: 150,
+                  child: ButtonWidget(
+                    title: "Verify",
+                    onPress: () {
+                      if (otpCode != null) {
+                        verifyOtp(context, otpCode!);
+                      } else {
+                        showSnackBar(context, "Enter 6-Digit code");
+                      }
+                    },
+                  )),
             ],
           ),
         ),
       ),
     );
+  }
+
+  // verify otp
+  void verifyOtp(BuildContext context, String userOtp) {
+    AuthProvider ap = new AuthProvider();
+    ap.verifyOtp(
+      context: context,
+      verificationId: widget.verificationId,
+      userOtp: userOtp,
+      onSuccess: () {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VerificationScreen(),
+            ),
+            (route) => false);
+      },
+    );
+  }
+
+  void resendCode() {
+    String phoneNumber = "${widget.phone}";
+    AuthProvider ap = new AuthProvider();
+    ap.signInWithPhone(context, "$phoneNumber");
   }
 }

@@ -1,3 +1,5 @@
+import 'package:e_bus_tracker/login.dart';
+import 'package:e_bus_tracker/signup.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreenPage extends StatelessWidget {
@@ -22,7 +24,10 @@ class SplashScreenPage extends StatelessWidget {
                 width: 100,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'signup');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignUp()));
                   },
                   child: Text('Sign up',
                       style: TextStyle(
@@ -43,7 +48,8 @@ class SplashScreenPage extends StatelessWidget {
                 width: 100,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'login');
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const Login()));
                   },
                   child: Text(
                     'Log in',

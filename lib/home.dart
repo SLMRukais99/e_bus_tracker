@@ -1,3 +1,5 @@
+import 'package:e_bus_tracker/login.dart';
+import 'package:e_bus_tracker/services/firebase_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:e_bus_tracker/bus_operator_profile_page.dart';
@@ -45,10 +47,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text("User Profile"),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                await FirebaseServices().signOutUser();
                 FirebaseAuth.instance.signOut().then((value) {
                   print("Signed Out");
-                  Navigator.pushNamed(context, 'login');
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Login()));
                 });
               },
               child: Text("Logout"),

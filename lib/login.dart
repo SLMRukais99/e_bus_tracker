@@ -1,7 +1,9 @@
-import 'package:e_bus_tracker/forgot_password.dart';
+import 'package:e_bus_tracker/phone.dart';
+import 'package:e_bus_tracker/services/firebase_services.dart';
+import 'package:e_bus_tracker/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -128,17 +130,13 @@ class _LoginState extends State<Login> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       TextButton(
-                                          onPressed: () {
-                                            Navigator.push(context, 
-                                            MaterialPageRoute(builder: (context) => ForgotPasswordScreen())
-                                            );
-                                          },
+                                          onPressed: () {},
                                           child: Text(
                                             'Forgot Password?',
                                             style: TextStyle(
                                               decoration:
                                                   TextDecoration.underline,
-                                              color: Color(0xFF673AB7),
+                                              color: Color(0xff4c505b),
                                               fontSize: 18,
                                             ),
                                           )),
@@ -160,8 +158,11 @@ class _LoginState extends State<Login> {
                                                           _passwordTextController
                                                               .text)
                                                   .then((value) {
-                                                Navigator.pushNamed(
-                                                    context, 'home');
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            TwoFactorAuthScreen()));
                                               }).onError((error, stackTrace) {
                                                 print(
                                                     "Error ${error.toString()}");
@@ -195,8 +196,11 @@ class _LoginState extends State<Login> {
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                Navigator.pushNamed(
-                                                    context, 'signup');
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const SignUp()));
                                               },
                                               child: Text(
                                                 'Sign Up',
@@ -228,14 +232,31 @@ class _LoginState extends State<Login> {
                                       ),
                                       SizedBox(
                                           height: 40,
-                                          width: 150,
+                                          width: 135,
                                           child: ElevatedButton(
-                                            onPressed: () {},
-                                            child: Text(
-                                              'Google',
-                                              style: TextStyle(
-                                                  color: Color(0xff4c505b),
-                                                  fontSize: 18),
+                                            onPressed: () async {
+                                              await FirebaseServices()
+                                                  .signInWithGoogle();
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          TwoFactorAuthScreen()));
+                                            },
+                                            child: Row(
+                                              children: <Widget>[
+                                                Image.asset(
+                                                  "assets/images/googlelogo.png",
+                                                  width: 35,
+                                                  height: 30,
+                                                ),
+                                                Text(
+                                                  'Google',
+                                                  style: TextStyle(
+                                                      color: Color(0xff4c505b),
+                                                      fontSize: 18),
+                                                ),
+                                              ],
                                             ),
                                             style: ElevatedButton.styleFrom(
                                                 backgroundColor:

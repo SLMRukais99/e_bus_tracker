@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.e_bus_tracker">
+
    <application
         android:label="E-Bus Tracker"
         android:name="${applicationName}"
