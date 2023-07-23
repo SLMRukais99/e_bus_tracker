@@ -1,6 +1,13 @@
+import 'package:e_bus_tracker/bus_operator_profile_page.dart';
+import 'package:e_bus_tracker/login.dart';
+import 'package:e_bus_tracker/services/firebase_services.dart';
+import 'package:e_bus_tracker/user_profile_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfileTypeScreen extends StatelessWidget {
+  const ProfileTypeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,15 +27,15 @@ class ProfileTypeScreen extends StatelessWidget {
                   fontSize: 40,
                   fontWeight: FontWeight.w800,
                 ),
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
               ),
-              SizedBox(height: 6), // Reduce vertical spacing
+              SizedBox(height: 20), // Reduce vertical spacing
               Text(
-                "Select your profile type according to your needs \nto track the bus",
-                style: TextStyle(fontSize: 14),
+                "Select your profile type according to your needs to track the bus",
+                style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.justify,
               ),
-              SizedBox(height: 50), // Add more space between topic and boxes
+              SizedBox(height: 30), // Add more space between topic and boxes
               Column(
                 children: [
                   Container(
@@ -45,24 +52,45 @@ class ProfileTypeScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: TextButton.icon(
-                      onPressed: () {
-                        // Handle passenger profile selection
-                        Navigator.pushNamed(context, 'user_profile_page');
-                      },
-                      icon: Icon(
-                        Icons.person,
-                        color: Colors.black,
-                      ),
-                      label: Text(
-                        "Passenger",
-                        style: TextStyle(
-                          color: Colors.black,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        TextButton.icon(
+                          onPressed: () {
+                            // Handle passenger profile selection
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserProfileScreen()),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.person,
+                            color: Colors.black,
+                            size: 35,
+                          ),
+                          label: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Passenger",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                              ),
+                              Text(
+                                "Track the next bus at your stop",
+                                style: TextStyle(
+                                    color: Colors.yellow[50], fontSize: 12),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 16), // Add space between boxes
+                  SizedBox(height: 30), // Add space between boxes
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -77,22 +105,43 @@ class ProfileTypeScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: TextButton.icon(
-                      onPressed: () {
-                        // Handle bus operator profile selection
-                        Navigator.pushNamed(
-                            context, 'bus_operator_profile_page');
-                      },
-                      icon: Icon(
-                        Icons.directions_bus,
-                        color: Colors.black,
-                      ),
-                      label: Text(
-                        "Bus Operator",
-                        style: TextStyle(
-                          color: Colors.black,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        TextButton.icon(
+                          onPressed: () {
+                            // Handle bus operator profile selection
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      BusOperatorProfileScreen()),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.directions_bus,
+                            color: Colors.black,
+                            size: 35,
+                          ),
+                          label: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Bus Operator",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                              ),
+                              Text(
+                                "Track your bus route",
+                                style: TextStyle(
+                                    color: Colors.yellow[50], fontSize: 12),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ],
@@ -102,11 +151,19 @@ class ProfileTypeScreen extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.center,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // Handle next button press
+                      await FirebaseServices().signOutUser();
+                      FirebaseAuth.instance.signOut().then((value) {
+                        print("Signed Out");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Login()));
+                      });
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.purple,
+                      primary: Colors.deepPurple,
                       onPrimary: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -115,7 +172,7 @@ class ProfileTypeScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
-                        "Next",
+                        "Logout",
                         style: TextStyle(fontSize: 18),
                       ),
                     ),

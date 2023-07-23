@@ -1,4 +1,5 @@
 import 'package:e_bus_tracker/home.dart';
+import 'package:e_bus_tracker/profileType.dart';
 import 'package:flutter/material.dart';
 
 class VerificationScreen extends StatelessWidget {
@@ -36,7 +37,7 @@ class VerificationScreen extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const HomeScreen()));
+                              builder: (context) => const ProfileTypeScreen()));
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.deepPurple,

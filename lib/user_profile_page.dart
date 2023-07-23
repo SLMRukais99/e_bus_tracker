@@ -6,8 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_storage/firebase_storage.dart';
 
-
-
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({Key? key}) : super(key: key);
 
@@ -35,26 +33,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
+  Future<String?> _uploadImage(File image) async {
+    try {
+      // Upload the image to Firebase Storage
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('user_profile_images')
+          .child('image.jpg');
+      final uploadTask = storageRef.putFile(image);
 
+      // Get the download URL
+      final snapshot = await uploadTask;
+      final downloadURL = await snapshot.ref.getDownloadURL();
 
-Future<String?> _uploadImage(File image) async {
-  try {
-    // Upload the image to Firebase Storage
-    final storageRef = FirebaseStorage.instance.ref().child('user_profile_images').child('image.jpg');
-    final uploadTask = storageRef.putFile(image);
+      print('Image uploaded successfully. Download URL: $downloadURL');
 
-    // Get the download URL
-    final snapshot = await uploadTask;
-    final downloadURL = await snapshot.ref.getDownloadURL();
-
-    print('Image uploaded successfully. Download URL: $downloadURL');
-
-    return downloadURL;
-  } catch (e) {
-    print('Error uploading image: $e');
-    return null;
+      return downloadURL;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
   }
-}
 
   Future<void> _saveUserProfile() async {
     final name = nameController.text;
@@ -91,8 +90,10 @@ Future<String?> _uploadImage(File image) async {
         'email': email,
         'profileImageURL': downloadURL,
       };
- await FirebaseFirestore.instance.collection('userProfiles').add(userProfileData);
-      
+      await FirebaseFirestore.instance
+          .collection('userProfiles')
+          .add(userProfileData);
+
       setState(() {
         nameController.clear();
         homeController.clear();
@@ -137,8 +138,9 @@ Future<String?> _uploadImage(File image) async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Profile'),
+        title: Text('Create Passenger Profile'),
         backgroundColor: Colors.deepPurple,
+        centerTitle: true,
       ),
       body: Container(
         padding: EdgeInsets.only(top: 30),
@@ -289,6 +291,7 @@ Future<String?> _uploadImage(File image) async {
                       height: 50,
                       width: 150,
                       child: Stack(
+                        alignment: Alignment.center,
                         children: [
                           AnimatedOpacity(
                             opacity: isLoading ? 0.0 : 1.0,
@@ -298,7 +301,8 @@ Future<String?> _uploadImage(File image) async {
                               onPress: () async {
                                 final phoneNumber = phoneNoController.text;
                                 final email = emailController.text;
-                                if (_validatePhoneNumber(phoneNumber) && _validateEmail(email)) {
+                                if (_validatePhoneNumber(phoneNumber) &&
+                                    _validateEmail(email)) {
                                   await _saveUserProfile();
                                 } else {
                                   showSnackBar('Invalid phone number or email');
@@ -318,7 +322,8 @@ Future<String?> _uploadImage(File image) async {
                               ),
                               child: CircularProgressIndicator(
                                 strokeWidth: 3,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.deepPurple),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.deepPurple),
                               ),
                             ),
                           ),

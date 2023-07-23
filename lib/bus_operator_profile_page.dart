@@ -152,8 +152,9 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bus Driver Profile'),
+        title: Text('Create Bus Operator Profile'),
         backgroundColor: Colors.deepPurple,
+        centerTitle: true,
       ),
       body: Container(
         padding: EdgeInsets.only(top: 30),
@@ -320,6 +321,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                       height: 50,
                       width: 150,
                       child: Stack(
+                        alignment: Alignment.center,
                         children: [
                           AnimatedOpacity(
                             opacity: isLoading ? 0.0 : 1.0,
