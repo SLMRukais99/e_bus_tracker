@@ -1,3 +1,4 @@
+import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:e_bus_tracker/password_reset_result_screen.dart';
@@ -37,7 +38,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         builder: (context) {
           return AlertDialog(
             title: Text('Email Not Registered'),
-            content: Text('The email you entered is not registered. Please try again.'),
+            content: Text(
+                'The email you entered is not registered. Please try again.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -59,30 +61,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(top: 100),
-            child: Text(
-              'Forgot Password',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(top: 100),
+              child: Text(
+                'Forgot Password',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple,
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 30),
-          Image.asset(
-            'assets/images/forgot_password.png',
-            height: 150,
-            width: 150,
-          ),
-          Expanded(
-            child: Padding(
+            SizedBox(height: 30),
+            Image.asset(
+              'assets/images/forgot_password.png',
+              height: 150,
+              width: 150,
+            ),
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Align(
                 alignment: Alignment.topCenter,
@@ -94,7 +96,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     Text(
                       'Enter your registered email below to receive\npassword reset instructions',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      style: TextStyle(fontSize: 16, color: Colors.black),
                     ),
                     SizedBox(height: 40),
                     TextFormField(
@@ -105,20 +107,24 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         suffixIcon: Icon(Icons.email, color: Colors.deepPurple),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _sendPasswordResetEmail,
-                      child: Text('Reset Password'),
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
+                    SizedBox(height: 40),
+                    SizedBox(
+                      width: 250,
+                      height: 50,
+                      child: ButtonWidget(
+                        title: "Reset Password",
+                        onPress: () {
+                          _sendPasswordResetEmail();
+                        },
                       ),
                     ),
+                    SizedBox(height: 20)
                   ],
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

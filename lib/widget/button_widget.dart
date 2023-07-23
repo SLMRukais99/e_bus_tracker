@@ -20,7 +20,7 @@ class ButtonWidget extends StatelessWidget {
       },
       child: Text(
         title,
-        style: TextStyle(color: Colors.white, fontSize: 25),
+        style: TextStyle(color: Colors.white, fontSize: 20),
       ),
       style: ElevatedButton.styleFrom(
           backgroundColor: color,

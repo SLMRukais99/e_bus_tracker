@@ -1,3 +1,4 @@
+import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:e_bus_tracker/login.dart';
 
@@ -40,22 +41,23 @@ class PasswordResetResultScreen extends StatelessWidget {
                     Text(
                       'We have sent password recovery instructions to your mail',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      style: TextStyle(fontSize: 16, color: Colors.black),
                     ),
                     SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => Login()),
-                          (route) => false,
-                        );
-                      },
-                      child: Text('OK'),
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
+                    SizedBox(
+                      width: 80,
+                      height: 40,
+                      child: ButtonWidget(
+                        title: "OK",
+                        onPress: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => Login()),
+                            (route) => false,
+                          );
+                        },
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),

@@ -1,3 +1,4 @@
+import 'package:e_bus_tracker/forgot_password.dart';
 import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/services/firebase_services.dart';
 import 'package:e_bus_tracker/signup.dart';
@@ -130,7 +131,13 @@ class _LoginState extends State<Login> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       TextButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ForgotPasswordScreen()));
+                                          },
                                           child: Text(
                                             'Forgot Password?',
                                             style: TextStyle(

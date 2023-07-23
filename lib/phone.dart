@@ -1,4 +1,5 @@
 import 'package:e_bus_tracker/auth_provider/auth.dart';
+import 'package:e_bus_tracker/tfa.dart';
 import 'package:flutter/material.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 
@@ -8,6 +9,8 @@ class TwoFactorAuthScreen extends StatefulWidget {
   @override
   State<TwoFactorAuthScreen> createState() => _TwoFactorAuthScreenState();
 }
+
+String? _errorMessage;
 
 class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
   TextEditingController phoneController = TextEditingController();
@@ -33,10 +36,11 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              SizedBox(height: 24.0),
               CircleAvatar(
                   radius: 100,
                   backgroundImage: AssetImage('assets/images/phonenum.png')),
-              SizedBox(height: 24.0),
+              SizedBox(height: 30.0),
               Text(
                 'Please Enter Your Phone Number',
                 style: TextStyle(fontSize: 20),
@@ -48,6 +52,7 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   labelText: 'Phone Number(+94xxxxxxxxx)',
+                  errorText: _errorMessage,
                 ),
               ),
               SizedBox(height: 30.0),
@@ -72,5 +77,38 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
     String phoneNumber = phoneController.text;
     AuthProvider ap = new AuthProvider();
     ap.signInWithPhone(context, "$phoneNumber");
+
+    bool isPhoneNumValid(String phoneNumber) {
+      phoneNumber = phoneNumber.trim();
+      final phoneRegex = RegExp(r'^\+94\d{9}$');
+      return phoneRegex.hasMatch(phoneNumber);
+    }
+
+    if (!isPhoneNumValid(phoneNumber)) {
+      setState(() {
+        _errorMessage = 'Please enter a valid phone number.';
+      });
+      return;
+    }
+
+    try {
+      AuthProvider ap = AuthProvider();
+      ap.signInWithPhone(context, phoneNumber);
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('An error occurred while processing your request.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+    }
   }
 }
