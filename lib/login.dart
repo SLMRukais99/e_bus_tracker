@@ -124,7 +124,7 @@ class _LoginState extends State<Login> {
                                     ),
                                     fillColor: Colors.grey.shade100,
                                     filled: true,
-                                    hintText: "Passwor",
+                                    hintText: "Password",
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
