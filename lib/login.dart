@@ -24,6 +24,11 @@ class _LoginState extends State<Login> {
   String? _emailError;
   String? _passwordError;
 
+  void clearUserInput() {
+    _emailTextController.clear();
+    _passwordTextController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -215,7 +220,8 @@ class _LoginState extends State<Login> {
                                                       password: password)
                                                   .then((value) {
                                                 // Success, navigate to the next screen.
-                                                Navigator.push(
+                                                clearUserInput(); // Call the function to clear user input
+                                                Navigator.pushReplacement(
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>

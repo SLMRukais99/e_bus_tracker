@@ -22,6 +22,13 @@ var _isObscured2 = true;
 class _SignUpState extends State<SignUp> {
   String? _errorMessage;
 
+  void clearUserInput() {
+    _usernameTextController.clear();
+    _emailTextController.clear();
+    _passwordTextController.clear();
+    _confirmpasswordTextController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -254,9 +261,9 @@ class _SignUpState extends State<SignUp> {
                                         email: _emailTextController.text.trim(),
                                         password: _passwordTextController.text,
                                       );
-
                                       // Account creation successful, navigate to the next screen
-                                      Navigator.push(
+                                      clearUserInput(); // Call the function to clear user input
+                                      Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
