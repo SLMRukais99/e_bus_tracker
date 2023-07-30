@@ -301,15 +301,15 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                     ),
                     SizedBox(height: 16.0),
                     TextField(
-                      controller: homeController,
+                      controller: busnoController,
                       decoration: InputDecoration(
-                        labelText: 'Bus No',
+                        labelText: 'Bus No.',
                         labelStyle: TextStyle(
                           color: Colors.deepPurple,
                         ),
-                        hintText: 'Enter your bus No',
+                        hintText: 'Enter your bus number',
                         prefixIcon: Icon(
-                          Icons.home_outlined,
+                          Icons.airport_shuttle_outlined,
                           color: Colors.deepPurple,
                         ),
                       ),
