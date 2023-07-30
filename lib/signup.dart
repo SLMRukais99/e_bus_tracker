@@ -20,6 +20,8 @@ var _isObscured1 = true;
 var _isObscured2 = true;
 
 class _SignUpState extends State<SignUp> {
+  String? _errorMessage;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -187,6 +189,17 @@ class _SignUpState extends State<SignUp> {
                                   borderRadius: BorderRadius.circular(10),
                                 )),
                           ),
+                          if (_errorMessage != null)
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Text(
+                                _errorMessage!,
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
                           SizedBox(
                             height: 20,
                           ),
@@ -196,23 +209,66 @@ class _SignUpState extends State<SignUp> {
                               child: ButtonWidget(
                                   title: "Sign Up",
                                   onPress: () async {
-                                    await FirebaseAuth.instance
-                                        .createUserWithEmailAndPassword(
-                                            email: _emailTextController.text
-                                                .trim(),
-                                            password:
-                                                _passwordTextController.text)
-                                        .then((value) {
-                                      print("Created New Account");
+                                    if (_usernameTextController.text.isEmpty ||
+                                        _emailTextController.text.isEmpty ||
+                                        _passwordTextController.text.isEmpty ||
+                                        _confirmpasswordTextController
+                                            .text.isEmpty) {
+                                      setState(() {
+                                        _errorMessage =
+                                            "All fields are required.";
+                                      });
+                                      return;
+                                    }
+
+                                    if (!isValidEmail(
+                                        _emailTextController.text)) {
+                                      setState(() {
+                                        _errorMessage =
+                                            "Invalid email address.";
+                                      });
+                                      return;
+                                    }
+
+                                    if (_passwordTextController.text.length <
+                                        6) {
+                                      setState(() {
+                                        _errorMessage =
+                                            "Password must be at least 6 characters long.";
+                                      });
+                                      return;
+                                    }
+
+                                    if (_passwordTextController.text !=
+                                        _confirmpasswordTextController.text) {
+                                      setState(() {
+                                        _errorMessage =
+                                            "Passwords do not match.";
+                                      });
+                                      return;
+                                    }
+
+                                    try {
+                                      await FirebaseAuth.instance
+                                          .createUserWithEmailAndPassword(
+                                        email: _emailTextController.text.trim(),
+                                        password: _passwordTextController.text,
+                                      );
+
+                                      // Account creation successful, navigate to the next screen
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  TwoFactorAuthScreen()));
-                                      print("ok");
-                                    }).onError((error, stackTrace) {
-                                      print("Error ${error.toString()}");
-                                    });
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              TwoFactorAuthScreen(),
+                                        ),
+                                      );
+                                    } on FirebaseAuthException catch (e) {
+                                      setState(() {
+                                        _errorMessage = e.message ??
+                                            "Unknown error occurred.";
+                                      });
+                                    }
                                   })),
                           Container(
                             child: Row(
@@ -258,4 +314,9 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
+}
+
+bool isValidEmail(String email) {
+  final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  return emailRegex.hasMatch(email);
 }
