@@ -1,5 +1,6 @@
 import 'package:e_bus_tracker/forgot_password.dart';
 import 'package:e_bus_tracker/phone.dart';
+import 'package:e_bus_tracker/profileType.dart';
 import 'package:e_bus_tracker/services/firebase_services.dart';
 import 'package:e_bus_tracker/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -169,7 +170,7 @@ class _LoginState extends State<Login> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            TwoFactorAuthScreen()));
+                                                            ProfileTypeScreen()));
                                               }).onError((error, stackTrace) {
                                                 print(
                                                     "Error ${error.toString()}");
