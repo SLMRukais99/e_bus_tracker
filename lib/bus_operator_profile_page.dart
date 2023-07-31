@@ -303,7 +303,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                     TextField(
                       controller: busnoController,
                       decoration: InputDecoration(
-                        labelText: 'Bus No.',
+                        labelText: 'Bus No',
                         labelStyle: TextStyle(
                           color: Colors.deepPurple,
                         ),
