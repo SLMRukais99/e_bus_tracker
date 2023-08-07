@@ -45,6 +45,11 @@ dependencies:
   google_sign_in: ^6.1.4
   pinput: ^2.2.31
   provider: ^6.0.4
+  google_maps_flutter: ^2.4.0
+  url_launcher: ^6.0.9
+  location: ^5.0.0
+  google_maps_webservice: ^0.0.19
+  flutter_google_places: ^0.3.0
 
 dev_dependencies:
   flutter_test:

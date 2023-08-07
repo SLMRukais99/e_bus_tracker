@@ -1,8 +1,8 @@
 import 'package:e_bus_tracker/forgot_password.dart';
 import 'package:e_bus_tracker/phone.dart';
-import 'package:e_bus_tracker/profileType.dart';
 import 'package:e_bus_tracker/services/firebase_services.dart';
 import 'package:e_bus_tracker/signup.dart';
+import 'package:e_bus_tracker/bostarttrip.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -225,7 +225,7 @@ class _LoginState extends State<Login> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            ProfileTypeScreen()));
+                                                            BOStartTrip()));
                                               }).onError((error, stackTrace) {
                                                 // Error during sign-in, print the error.
                                                 print(
