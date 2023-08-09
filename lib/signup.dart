@@ -1,8 +1,10 @@
+import 'package:e_bus_tracker/welcome.dart';
 import 'package:e_bus_tracker/login.dart';
-import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+enum UserType { passenger, busOperator }
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -20,6 +22,7 @@ var _isObscured1 = true;
 var _isObscured2 = true;
 
 class _SignUpState extends State<SignUp> {
+  UserType? _selectedUserType; // Default selected option
   String? _errorMessage;
 
   void clearUserInput() {
@@ -63,6 +66,44 @@ class _SignUpState extends State<SignUp> {
                       margin: EdgeInsets.only(left: 35, right: 35),
                       child: Column(
                         children: [
+                          Container(
+                            padding: EdgeInsets.all(6.0),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: DropdownButton<UserType>(
+                              value: _selectedUserType,
+                              hint: Text(
+                                "Select user type",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              dropdownColor: Colors.white,
+                              icon: Icon(Icons.arrow_drop_down),
+                              iconSize: 36,
+                              isExpanded: true,
+                              underline: SizedBox(),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16),
+                              onChanged: (UserType? newValue) {
+                                setState(() {
+                                  _selectedUserType = newValue!;
+                                });
+                              },
+                              items: [
+                                DropdownMenuItem<UserType>(
+                                  value: UserType.passenger,
+                                  child: Text('Passenger'),
+                                ),
+                                DropdownMenuItem<UserType>(
+                                  value: UserType.busOperator,
+                                  child: Text('Bus Operator'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
                           TextField(
                             controller: _usernameTextController,
                             style: TextStyle(color: Colors.black),
@@ -216,6 +257,13 @@ class _SignUpState extends State<SignUp> {
                               child: ButtonWidget(
                                   title: "Sign Up",
                                   onPress: () async {
+                                    if (_selectedUserType == null) {
+                                      setState(() {
+                                        _errorMessage =
+                                            "Please select a user type.";
+                                      });
+                                      return;
+                                    }
                                     if (_usernameTextController.text.isEmpty ||
                                         _emailTextController.text.isEmpty ||
                                         _passwordTextController.text.isEmpty ||
@@ -263,11 +311,12 @@ class _SignUpState extends State<SignUp> {
                                       );
                                       // Account creation successful, navigate to the next screen
                                       clearUserInput(); // Call the function to clear user input
-                                      Navigator.pushReplacement(
+                                      Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              TwoFactorAuthScreen(),
+                                          builder: (context) => WelcomeScreen(
+                                              userType:
+                                                  _selectedUserType!), // Convert enum to string
                                         ),
                                       );
                                     } on FirebaseAuthException catch (e) {

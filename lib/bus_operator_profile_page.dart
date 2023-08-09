@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:e_bus_tracker/bostarttrip.dart';
+import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,11 +40,14 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
 
   Future<String?> _uploadImage(File image) async {
     try {
+      // Generate a unique filename for each uploaded image
+      final uniqueFileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+
       // Upload the image to Firebase Storage
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('bus_operator_profile_images')
-          .child('image.jpg');
+          .child(uniqueFileName);
       final uploadTask = storageRef.putFile(image);
 
       // Get the download URL
@@ -99,6 +104,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
         'homeAddress': homeAddress,
         'phoneNumber': phoneNumber,
         'email': email,
+        'busNo': busNo,
         'profileImageURL': downloadURL,
       };
       await FirebaseFirestore.instance
@@ -116,7 +122,10 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
       });
 
       // Navigate to the home screen
-      // Example: Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => BOStartTrip()),
+      );
     } catch (e) {
       // Handle any errors that occur during saving
       print('Error saving user profile: $e');
@@ -146,6 +155,16 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
         content: Text(message),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    homeController.dispose();
+    phoneNoController.dispose();
+    emailController.dispose();
+    busnoController.dispose();
+    super.dispose();
   }
 
   @override
@@ -292,7 +311,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                         labelStyle: TextStyle(
                           color: Colors.deepPurple,
                         ),
-                        hintText: 'Enter your home email',
+                        hintText: 'Enter your email',
                         prefixIcon: Icon(
                           Icons.email_outlined,
                           color: Colors.deepPurple,
@@ -334,8 +353,12 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                                 if (_validatePhoneNumber(phoneNumber) &&
                                     _validateEmail(email)) {
                                   await _saveUserProfile();
-                                  Navigator.pushReplacementNamed(
-                                      context, 'home');
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            TwoFactorAuthScreen()),
+                                  );
                                 } else {
                                   showSnackBar('Invalid phone number or email');
                                 }

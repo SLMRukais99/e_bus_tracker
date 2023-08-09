@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -304,6 +305,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 if (_validatePhoneNumber(phoneNumber) &&
                                     _validateEmail(email)) {
                                   await _saveUserProfile();
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TwoFactorAuthScreen()));
                                 } else {
                                   showSnackBar('Invalid phone number or email');
                                 }

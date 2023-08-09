@@ -20,7 +20,7 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
         title: Text(
-          'Verify Your Account',
+          'Verify Your Phone Number',
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,

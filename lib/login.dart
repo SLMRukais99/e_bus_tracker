@@ -1,5 +1,4 @@
 import 'package:e_bus_tracker/forgot_password.dart';
-import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/services/firebase_services.dart';
 import 'package:e_bus_tracker/signup.dart';
 import 'package:e_bus_tracker/bostarttrip.dart';
@@ -311,7 +310,7 @@ class _LoginState extends State<Login> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          TwoFactorAuthScreen()));
+                                                          BOStartTrip()));
                                             },
                                             child: Row(
                                               children: <Widget>[
