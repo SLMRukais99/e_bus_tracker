@@ -1,10 +1,12 @@
 import 'package:e_bus_tracker/forgot_password.dart';
+import 'package:e_bus_tracker/home.dart';
 import 'package:e_bus_tracker/services/firebase_services.dart';
 import 'package:e_bus_tracker/signup.dart';
 import 'package:e_bus_tracker/bostarttrip.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -26,6 +28,126 @@ class _LoginState extends State<Login> {
   void clearUserInput() {
     _emailTextController.clear();
     _passwordTextController.clear();
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    // Show a dialog to select user type
+    String? UserType = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: Text(
+              "Select User Type",
+              textAlign: TextAlign.center,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop("passenger");
+                  },
+                  child: Text("Passenger"),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurple,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      )),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop("busOperator");
+                  },
+                  child: Text("Bus Operator"),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurple,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      )),
+                ),
+              ],
+            ),
+          );
+        });
+
+    if (UserType != null) {
+      // Sign in with Google
+      await FirebaseServices().signInWithGoogle();
+
+      // Navigate to the relevant screen based on user type
+      if (UserType == "passenger") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      } else if (UserType == "busOperator") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => BOStartTrip()),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleLogin() async {
+    String email = _emailTextController.text.trim();
+    String password = _passwordTextController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      setState(() {
+        _emailError = "Please Enter Your Email";
+        _passwordError = "Password is required for login";
+      });
+      return;
+    }
+
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Fetch user data from Firestore
+      DocumentSnapshot userDataSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+
+      if (userDataSnapshot.exists) {
+        String role = userDataSnapshot.get('role');
+
+        if (role == "busOperator") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BOStartTrip(),
+            ),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(),
+            ),
+          );
+        }
+      } else {
+        // Handle invalid user
+        setState(() {
+          _emailError = "Invalid user";
+          _passwordError = null;
+        });
+      }
+    } catch (error) {
+      print("Error during sign-in: ${error.toString()}");
+      setState(() {
+        _passwordError = "Invalid email or password";
+        _emailError = null;
+      });
+    }
   }
 
   @override
@@ -166,77 +288,7 @@ class _LoginState extends State<Login> {
                                           height: 50,
                                           width: 150,
                                           child: ElevatedButton(
-                                            onPressed: () async {
-                                              String email =
-                                                  _emailTextController.text
-                                                      .trim();
-                                              String password =
-                                                  _passwordTextController.text;
-
-                                              if (email.isEmpty) {
-                                                setState(() {
-                                                  _emailError =
-                                                      "Please Enter Your Email";
-                                                  _passwordError = null;
-                                                });
-                                                return;
-                                              }
-
-                                              if (!RegExp(
-                                                      r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]")
-                                                  .hasMatch(email)) {
-                                                setState(() {
-                                                  _emailError =
-                                                      "Please Enter a valid Email";
-                                                  _passwordError = null;
-                                                });
-                                                return;
-                                              }
-
-                                              if (password.isEmpty) {
-                                                setState(() {
-                                                  _passwordError =
-                                                      "Password is required for login";
-                                                  _emailError = null;
-                                                });
-                                                return;
-                                              }
-
-                                              RegExp regex = RegExp(r'^.{6,}$');
-                                              if (!regex.hasMatch(password)) {
-                                                setState(() {
-                                                  _passwordError =
-                                                      "Please enter valid password (min. 6 characters)";
-                                                  _emailError = null;
-                                                });
-                                                return;
-                                              }
-
-                                              // If the validation passes, attempt to sign in.
-                                              await FirebaseAuth.instance
-                                                  .signInWithEmailAndPassword(
-                                                      email: email,
-                                                      password: password)
-                                                  .then((value) {
-                                                // Success, navigate to the next screen.
-                                                clearUserInput(); // Call the function to clear user input
-                                                Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            BOStartTrip()));
-                                              }).onError((error, stackTrace) {
-                                                // Error during sign-in, print the error.
-                                                print(
-                                                    "Error ${error.toString()}");
-                                                // Show a generic error message.
-                                                setState(() {
-                                                  _passwordError =
-                                                      "Invalid email or password";
-                                                  _emailError = null;
-                                                });
-                                              });
-                                            },
+                                            onPressed: _handleLogin,
                                             child: Text(
                                               'Log in',
                                               style: TextStyle(
@@ -303,15 +355,7 @@ class _LoginState extends State<Login> {
                                           height: 40,
                                           width: 135,
                                           child: ElevatedButton(
-                                            onPressed: () async {
-                                              await FirebaseServices()
-                                                  .signInWithGoogle();
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          BOStartTrip()));
-                                            },
+                                            onPressed: _handleGoogleSignIn,
                                             child: Row(
                                               children: <Widget>[
                                                 Image.asset(

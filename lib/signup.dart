@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_bus_tracker/welcome.dart';
 import 'package:e_bus_tracker/login.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
@@ -12,6 +13,9 @@ class SignUp extends StatefulWidget {
   @override
   State<SignUp> createState() => _SignUpState();
 }
+
+final _formkey = GlobalKey<FormState>();
+final _auth = FirebaseAuth.instance;
 
 TextEditingController _usernameTextController = TextEditingController();
 TextEditingController _passwordTextController = TextEditingController();
@@ -74,7 +78,7 @@ class _SignUpState extends State<SignUp> {
                             child: DropdownButton<UserType>(
                               value: _selectedUserType,
                               hint: Text(
-                                "Select user type",
+                                "Select User Type",
                                 style: TextStyle(color: Colors.black),
                               ),
                               dropdownColor: Colors.white,
@@ -310,6 +314,15 @@ class _SignUpState extends State<SignUp> {
                                         password: _passwordTextController.text,
                                       );
                                       // Account creation successful, navigate to the next screen
+
+                                      // Store user type and other details in Firestore
+                                      await postDetailsToFirestore(
+                                        _emailTextController.text,
+                                        _selectedUserType == UserType.passenger
+                                            ? 'passenger'
+                                            : 'busOperator',
+                                      );
+
                                       clearUserInput(); // Call the function to clear user input
                                       Navigator.push(
                                         context,
@@ -370,6 +383,23 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
+}
+
+void signUp(String email, String password, String role) async {
+  CircularProgressIndicator();
+  if (_formkey.currentState!.validate()) {
+    await _auth
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((value) => {postDetailsToFirestore(email, role)})
+        .catchError((e) {});
+  }
+}
+
+postDetailsToFirestore(String email, String role) async {
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  var user = _auth.currentUser;
+  CollectionReference ref = FirebaseFirestore.instance.collection('users');
+  await ref.doc(user!.uid).set({'email': email, 'role': role});
 }
 
 bool isValidEmail(String email) {

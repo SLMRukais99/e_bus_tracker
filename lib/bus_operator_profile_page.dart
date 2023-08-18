@@ -85,20 +85,13 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
     });
 
     try {
-      // Add the user profile data to Firestore
-      await FirebaseFirestore.instance.collection('userProfiles').add({
-        'name': name,
-        'homeAddress': homeAddress,
-        'phoneNumber': phoneNumber,
-        'email': email,
-        'busNo': busNo,
-      });
+      // Upload the image
       String? downloadURL;
       if (image != null) {
         downloadURL = await _uploadImage(image!);
       }
 
-      // Add the user profile data to Firestore
+      // Add the bus operator profile data to Firestore
       final busOperatorProfileData = {
         'name': name,
         'homeAddress': homeAddress,
