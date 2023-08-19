@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_bus_tracker/progressdialog.dart';
 import 'package:e_bus_tracker/welcome.dart';
 import 'package:e_bus_tracker/login.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 enum UserType { passenger, busOperator }
 
@@ -22,20 +24,73 @@ TextEditingController _passwordTextController = TextEditingController();
 TextEditingController _confirmpasswordTextController = TextEditingController();
 TextEditingController _emailTextController = TextEditingController();
 
+UserType? _selectedUserType; // Default selected option
+String? _errorMessage;
+
+void clearUserInput() {
+  _usernameTextController.clear();
+  _emailTextController.clear();
+  _passwordTextController.clear();
+  _confirmpasswordTextController.clear();
+}
+
+ValidateForm(BuildContext context) async {
+  if (_selectedUserType == null) {
+    Fluttertoast.showToast(msg: "Please Select a User Type. ");
+  } else if (_usernameTextController.text.isEmpty ||
+      _emailTextController.text.isEmpty ||
+      _passwordTextController.text.isEmpty ||
+      _confirmpasswordTextController.text.isEmpty) {
+    Fluttertoast.showToast(msg: "All fields are required");
+  } else if (!isValidEmail(_emailTextController.text)) {
+    Fluttertoast.showToast(msg: "Invalid Email address. ");
+  } else if (_passwordTextController.text.length < 6) {
+    Fluttertoast.showToast(
+        msg: "Password must be at least 6 characters long. ");
+  } else if (_passwordTextController.text !=
+      _confirmpasswordTextController.text) {
+    Fluttertoast.showToast(msg: "Passwords do not match. ");
+  } else {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext c) {
+          return ProgressDialog(
+            message: "Processing. Please wait...",
+          );
+        });
+  }
+
+  try {
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: _emailTextController.text.trim(),
+      password: _passwordTextController.text,
+    ); // Account creation successful, navigate to the next screen
+
+    // Store user type and other details in Firestore
+    await postDetailsToFirestore(
+      _emailTextController.text,
+      _selectedUserType == UserType.passenger ? 'passenger' : 'busOperator',
+    );
+
+    clearUserInput(); // Call the function to clear user input
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (c) => WelcomeScreen(userType: _selectedUserType!),
+        // Convert enum to string
+      ),
+    );
+  } on FirebaseAuthException catch (e) {
+    _errorMessage = e.message ?? "Unknown error occurred.";
+  }
+}
+
 var _isObscured1 = true;
 var _isObscured2 = true;
 
 class _SignUpState extends State<SignUp> {
-  UserType? _selectedUserType; // Default selected option
-  String? _errorMessage;
-
-  void clearUserInput() {
-    _usernameTextController.clear();
-    _emailTextController.clear();
-    _passwordTextController.clear();
-    _confirmpasswordTextController.clear();
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -260,84 +315,8 @@ class _SignUpState extends State<SignUp> {
                               width: 150,
                               child: ButtonWidget(
                                   title: "Sign Up",
-                                  onPress: () async {
-                                    if (_selectedUserType == null) {
-                                      setState(() {
-                                        _errorMessage =
-                                            "Please select a user type.";
-                                      });
-                                      return;
-                                    }
-                                    if (_usernameTextController.text.isEmpty ||
-                                        _emailTextController.text.isEmpty ||
-                                        _passwordTextController.text.isEmpty ||
-                                        _confirmpasswordTextController
-                                            .text.isEmpty) {
-                                      setState(() {
-                                        _errorMessage =
-                                            "All fields are required.";
-                                      });
-                                      return;
-                                    }
-
-                                    if (!isValidEmail(
-                                        _emailTextController.text)) {
-                                      setState(() {
-                                        _errorMessage =
-                                            "Invalid email address.";
-                                      });
-                                      return;
-                                    }
-
-                                    if (_passwordTextController.text.length <
-                                        6) {
-                                      setState(() {
-                                        _errorMessage =
-                                            "Password must be at least 6 characters long.";
-                                      });
-                                      return;
-                                    }
-
-                                    if (_passwordTextController.text !=
-                                        _confirmpasswordTextController.text) {
-                                      setState(() {
-                                        _errorMessage =
-                                            "Passwords do not match.";
-                                      });
-                                      return;
-                                    }
-
-                                    try {
-                                      await FirebaseAuth.instance
-                                          .createUserWithEmailAndPassword(
-                                        email: _emailTextController.text.trim(),
-                                        password: _passwordTextController.text,
-                                      );
-                                      // Account creation successful, navigate to the next screen
-
-                                      // Store user type and other details in Firestore
-                                      await postDetailsToFirestore(
-                                        _emailTextController.text,
-                                        _selectedUserType == UserType.passenger
-                                            ? 'passenger'
-                                            : 'busOperator',
-                                      );
-
-                                      clearUserInput(); // Call the function to clear user input
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => WelcomeScreen(
-                                              userType:
-                                                  _selectedUserType!), // Convert enum to string
-                                        ),
-                                      );
-                                    } on FirebaseAuthException catch (e) {
-                                      setState(() {
-                                        _errorMessage = e.message ??
-                                            "Unknown error occurred.";
-                                      });
-                                    }
+                                  onPress: () {
+                                    ValidateForm(context);
                                   })),
                           Container(
                             child: Row(
