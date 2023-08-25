@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,6 +20,41 @@ class MyApp extends StatelessWidget {
 }
 
 class SplashScreenPage extends StatelessWidget {
+=======
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:e_bus_tracker/bostarttrip.dart';
+import 'package:e_bus_tracker/login.dart';
+import 'package:e_bus_tracker/signup.dart';
+import 'package:flutter/material.dart';
+
+class SplashScreenPage extends StatefulWidget {
+  @override
+  _SplashScreenPageState createState() => _SplashScreenPageState();
+}
+
+class _SplashScreenPageState extends State<SplashScreenPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  startTimer() {
+    Timer(const Duration(seconds: 5), () async {
+      if (await _auth.currentUser != null) {
+        //send user to home screen
+        Navigator.push(
+            context, MaterialPageRoute(builder: (c) => BOStartTrip()));
+      } else {
+        Navigator.push(context, MaterialPageRoute(builder: (c) => SignUp()));
+      }
+    });
+  }
+
+  void initState() {
+    super.initState();
+
+    startTimer();
+  }
+
+>>>>>>> Stashed changes
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -27,12 +63,13 @@ class SplashScreenPage extends StatelessWidget {
         Stack(
           children: [
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage("Assets/Background.png"),
                   fit: BoxFit.cover,
                 ),
               ),
+<<<<<<< Updated upstream
             ),
             Positioned(
               bottom: 160, // adjust the position of the button as needed
@@ -77,36 +114,61 @@ class SplashScreenPage extends StatelessWidget {
               ),
             ),
             Positioned(
+=======
+              child: const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Beyond Maps, Your Live Bus Guide!",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color.fromARGB(255, 101, 43, 108),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            const Positioned(
+>>>>>>> Stashed changes
               bottom: 40,
               left: 0,
               right: 0,
-              child: Container(
-                child: Column(
-                  children: [
-                    Text(
-                      'By Continuing, you agree with our',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                      ),
+              child: Column(
+                children: [
+                  Text(
+                    'By Continuing, you agree with our',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Terms of Service ',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Terms of Service ',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
                         ),
-                        Text(
-                          'and ',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
+                      ),
+                      Text(
+                        'and ',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
                         ),
+                      ),
+                      Text(
+                        'Privacy Policy',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+<<<<<<< Updated upstream
                         Text(
                           'Privacy Policy',
                           style: TextStyle(
@@ -118,6 +180,12 @@ class SplashScreenPage extends StatelessWidget {
                     ),
                   ],
                 ),
+=======
+                      ),
+                    ],
+                  ),
+                ],
+>>>>>>> Stashed changes
               ),
             ),
           ],
