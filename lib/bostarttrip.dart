@@ -52,7 +52,7 @@ class _BOStartTripState extends State<BOStartTrip> {
             markerId: MarkerId('currentLocation'),
             position: LatLng(
                 currentLocation.latitude ?? 0, currentLocation.longitude ?? 0),
-            infoWindow: InfoWindow(title: 'Current Location'),
+            infoWindow: InfoWindow(title: 'Start Location'),
           ),
         );
       });
@@ -71,7 +71,10 @@ class _BOStartTripState extends State<BOStartTrip> {
         context,
         MaterialPageRoute(
           builder: (context) => BOEndTrip(
-            currentLocation: currentLocation,
+            startLocationLatLng: LatLng(
+              currentLocation.latitude!,
+              currentLocation.longitude!,
+            ),
             destinationLatLng: destinationLatLng,
           ),
         ),
@@ -83,7 +86,10 @@ class _BOStartTripState extends State<BOStartTrip> {
       context,
       MaterialPageRoute(
         builder: (context) => BOEndTrip(
-          currentLocation: currentLocation,
+          startLocationLatLng: LatLng(
+            currentLocation.latitude!,
+            currentLocation.longitude!,
+          ),
           destinationLatLng: destinationLatLng,
         ),
       ),
@@ -182,7 +188,7 @@ class _BOStartTripState extends State<BOStartTrip> {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 15.0),
                   SizedBox(
                     height: 50,
                     width: 150,

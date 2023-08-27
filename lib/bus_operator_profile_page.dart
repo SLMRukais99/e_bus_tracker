@@ -332,50 +332,24 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                     SizedBox(
                       height: 50,
                       width: 150,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          AnimatedOpacity(
-                            opacity: isLoading ? 0.0 : 1.0,
-                            duration: Duration(milliseconds: 200),
-                            child: ButtonWidget(
-                              title: "Submit",
-                              onPress: () async {
-                                final phoneNumber = phoneNoController.text;
-                                final email = emailController.text;
-                                if (_validatePhoneNumber(phoneNumber) &&
-                                    _validateEmail(email)) {
-                                  await _saveUserProfile();
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            TwoFactorAuthScreen()),
-                                  );
-                                } else {
-                                  showSnackBar('Invalid phone number or email');
-                                }
-                              },
-                            ),
-                          ),
-                          AnimatedOpacity(
-                            opacity: isLoading ? 1.0 : 0.0,
-                            duration: Duration(milliseconds: 400),
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                              ),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.deepPurple),
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: ButtonWidget(
+                        title: "Submit",
+                        onPress: () async {
+                          final phoneNumber = phoneNoController.text;
+                          final email = emailController.text;
+                          if (_validatePhoneNumber(phoneNumber) &&
+                              _validateEmail(email)) {
+                            await _saveUserProfile();
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TwoFactorAuthScreen()),
+                            );
+                          } else {
+                            showSnackBar('Invalid phone number or email');
+                          }
+                        },
                       ),
                     ),
                   ],

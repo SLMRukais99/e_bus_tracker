@@ -7,14 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:e_bus_tracker/bostarttrip.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class BOEndTrip extends StatefulWidget {
-  final LocationData currentLocation;
+  final LatLng startLocationLatLng;
   final LatLng destinationLatLng;
 
   const BOEndTrip(
       {Key? key,
-      required this.currentLocation,
+      required this.startLocationLatLng,
       required this.destinationLatLng})
       : super(key: key);
 
@@ -27,71 +30,121 @@ class _BOEndTripState extends State<BOEndTrip> {
 
   final Completer<GoogleMapController> _controllerGoogleMap =
       Completer<GoogleMapController>();
-  late GoogleMapController newGoogleMapController;
-
   Set<Marker> markers = {};
   Set<Polyline> _polylines = {};
+
+  late GoogleMapController newGoogleMapController;
+  late LocationData currentLocation;
+  StreamSubscription<LocationData>? locationSubscription;
+  bool isLocationInitialized = false; // Add this flag
+
+  late PolylinePoints polylinePoints;
+  List<LatLng> routeCoordinates = []; // List to store route coordinates
 
   @override
   void initState() {
     super.initState();
     _initMap();
+    _startLocationTracking();
+    _getCurrentLocation(); // Initialize currentLocation
+    polylinePoints = PolylinePoints(); // Initialize PolylinePoints
   }
 
-  void _initMap() async {
-    await _getCurrentLocation();
+  void _initMap() {
+    markers.addAll([
+      Marker(
+          markerId: MarkerId('startLocation'),
+          position: widget.startLocationLatLng,
+          infoWindow: InfoWindow(title: 'Start Location'),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen)),
+      Marker(
+          markerId: MarkerId('destinationLocation'),
+          position: widget.destinationLatLng,
+          infoWindow: InfoWindow(title: 'Destination Location'),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue)),
+    ]);
+  }
 
+  void _startLocationTracking() {
+    Location location = Location();
+    locationSubscription =
+        location.onLocationChanged.listen((LocationData newLocation) {
+      currentLocation = newLocation;
+      _updateCurrentLocationMarker();
+      _updateRoutePolyline(); // Call method to update route polyline
+    });
+  }
+
+  void _updateCurrentLocationMarker() {
+    markers.removeWhere((marker) => marker.markerId.value == 'currentLocation');
     markers.add(
       Marker(
-        markerId: MarkerId('destinationLocation'),
-        position: widget.destinationLatLng,
-        infoWindow: InfoWindow(title: 'Destination Location'),
+        markerId: MarkerId('currentLocation'),
+        position: LatLng(
+          currentLocation.latitude ?? 0,
+          currentLocation.longitude ?? 0,
+        ),
+        infoWindow: InfoWindow(title: 'Current Location'),
       ),
     );
+    setState(() {});
   }
 
-  Future<void> _getCurrentLocation() async {
+  void _getCurrentLocation() async {
     try {
       Location location = Location();
-      LocationData currentLocation = await location.getLocation();
-
-      setState(() {
-        markers.add(
-          Marker(
-            markerId: MarkerId('currentLocation'),
-            position: LatLng(
-              widget.currentLocation.latitude ?? 0,
-              widget.currentLocation.longitude ?? 0,
-            ),
-            infoWindow: InfoWindow(title: 'Current Location'),
-          ),
-        );
-      });
+      currentLocation = await location.getLocation();
+      isLocationInitialized = true; // Update the flag
+      _updateCurrentLocationMarker(); // Update the current location marker
     } catch (e) {
       print("Error getting location: $e");
+    }
+    _updateRoutePolyline(); // Initial route polyline update
+  }
+
+  void _updateRoutePolyline() async {
+    if (isLocationInitialized) {
+      try {
+        String apiKey = 'AIzaSyAZ1LALf2ubP2J4gxXPlra09XPf9TCaYDE';
+        String url =
+            'https://maps.googleapis.com/maps/api/directions/json?origin=${currentLocation.latitude},${currentLocation.longitude}&destination=${widget.destinationLatLng.latitude},${widget.destinationLatLng.longitude}&key=$apiKey';
+
+        var response = await http.get(Uri.parse(url));
+        var data = jsonDecode(response.body);
+
+        if (data['status'] == 'OK') {
+          List<PointLatLng> result = polylinePoints
+              .decodePolyline(data['routes'][0]['overview_polyline']['points']);
+
+          routeCoordinates.clear();
+          for (var point in result) {
+            routeCoordinates.add(LatLng(point.latitude, point.longitude));
+          }
+
+          setState(() {
+            _polylines.clear(); // Clear previous polyline
+            final polyline = Polyline(
+              polylineId: PolylineId('routePolyline'),
+              color: Colors.deepPurple,
+              points: routeCoordinates,
+            );
+
+            _polylines.add(polyline); // Add updated polyline
+          });
+        } else {
+          print('Error fetching route: ${data['status']}');
+        }
+      } catch (e) {
+        print("Error updating route: $e");
+      }
     }
   }
 
   void _endTrip() {
-    // Clear markers to end the trip
-    markers.clear();
-    setState(() {});
-
-    final polyline = Polyline(
-      polylineId: PolylineId('tripPolyline'),
-      color: Colors.blue,
-      points: [
-        LatLng(
-          widget.currentLocation.latitude!,
-          widget.currentLocation.longitude!,
-        ),
-        widget.destinationLatLng,
-      ],
-    );
-
-    setState(() {
-      _polylines.add(polyline);
-    });
+    // Stop location tracking
+    locationSubscription?.cancel();
 
     Navigator.push(
       context,
@@ -99,6 +152,12 @@ class _BOEndTripState extends State<BOEndTrip> {
         builder: (context) => BOStartTrip(),
       ),
     ); // Navigate back to the StartTrip screen
+  }
+
+  @override
+  void dispose() {
+    locationSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -113,25 +172,30 @@ class _BOEndTripState extends State<BOEndTrip> {
               width: double.infinity,
               height: 650,
               padding: EdgeInsets.all(5.0),
-              child: GoogleMap(
-                mapType: MapType.normal,
-                myLocationButtonEnabled: true,
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(widget.currentLocation.latitude ?? 0,
-                      widget.currentLocation.longitude ?? 0),
-                  zoom: 14.0,
-                ),
-                onMapCreated: (GoogleMapController controller) {
-                  _controllerGoogleMap.complete(controller);
-                  newGoogleMapController = controller;
-                },
-                markers: markers,
-              ),
+              child: isLocationInitialized // Check if location is initialized
+                  ? GoogleMap(
+                      mapType: MapType.normal,
+                      myLocationButtonEnabled: true,
+                      polylines: _polylines,
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(currentLocation.latitude ?? 0,
+                            currentLocation.longitude ?? 0),
+                        zoom: 14.0,
+                      ),
+                      onMapCreated: (GoogleMapController controller) {
+                        _controllerGoogleMap.complete(controller);
+                        newGoogleMapController = controller;
+                      },
+                      markers: markers,
+                    )
+                  : CircularProgressIndicator(
+                      color: Colors.deepPurple,
+                    ), // Show a loading indicator if location is not initialized yet
             ),
             Container(
               child: Column(
                 children: [
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 30.0),
                   SizedBox(
                     height: 50,
                     width: 150,
@@ -140,7 +204,7 @@ class _BOEndTripState extends State<BOEndTrip> {
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 30.0),
             BottomNavigation(
               currentIndex: _currentIndex,
               onTabTapped: (index) {
