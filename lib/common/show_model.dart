@@ -13,21 +13,16 @@ class AddNewTaskModel extends StatefulWidget {
   final String dateTask;
   late final String documentId;
 
-
-
-  AddNewTaskModel({
-    this.fromWhere = '',
-    this.toWhere = '',
-    this.arrTimeTask = '',
-    this.deptTimeTask = '',
-    this.dateTask = '',
-    required Null Function(dynamic editedFrom, dynamic editedTo,
-            dynamic editedArrTime, dynamic editedDeptTime, dynamic editedDate)
-        onSave,
-    required this.documentId
-  
-  
-  });
+  AddNewTaskModel(
+      {this.fromWhere = '',
+      this.toWhere = '',
+      this.arrTimeTask = '',
+      this.deptTimeTask = '',
+      this.dateTask = '',
+      required Null Function(dynamic editedFrom, dynamic editedTo,
+              dynamic editedArrTime, dynamic editedDeptTime, dynamic editedDate)
+          onSave,
+      required this.documentId});
 
   @override
   State<AddNewTaskModel> createState() => _AddNewTaskModelState();
@@ -36,7 +31,6 @@ class AddNewTaskModel extends StatefulWidget {
 class _AddNewTaskModelState extends State<AddNewTaskModel> {
   DateTime dateTime = DateTime(2023, 08, 01, 5, 30);
   DateTime dateTime1 = DateTime(2023, 08, 01, 4, 30);
-  
 
   TextEditingController fromWhereController = TextEditingController();
   TextEditingController toWhereController = TextEditingController();
@@ -69,21 +63,16 @@ class _AddNewTaskModelState extends State<AddNewTaskModel> {
     try {
       final CollectionReference busScheduleCollection =
           FirebaseFirestore.instance.collection('busShedule');
-      
-         if(widget.documentId != ''){
-          await busScheduleCollection.add({
-        'fromWhere': fromWhereController.text,
-        'toWhere': toWhereController.text,
-        'arrTimeTask': arrTimeTaskController.text,
-        'deptTimeTask': deptTimeTaskController.text,
-        'date': dateTaskController.text,
-      });
-          
-         }
-        
-      
-      
 
+
+        await busScheduleCollection.add({
+          'fromWhere': fromWhereController.text,
+          'toWhere': toWhereController.text,
+          'arrTimeTask': arrTimeTaskController.text,
+          'deptTimeTask': deptTimeTaskController.text,
+          'date': dateTaskController.text,
+        });
+      
 
       Navigator.pop(context); // Close the bottom sheet
     } catch (error) {
@@ -92,7 +81,29 @@ class _AddNewTaskModelState extends State<AddNewTaskModel> {
     }
   }
 
-  
+  Future<void> _updateTaskInFirestore(
+      String documentId,
+      String editedFrom,
+      String editedTo,
+      String editedArrTime,
+      String editedDeptTime,
+      String editedDate) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('busShedule')
+          .doc(documentId)
+          .update({
+        'fromWhere': editedFrom,
+        'toWhere': editedTo,
+        'arrTimeTask': editedArrTime,
+        'deptTimeTask': editedDeptTime,
+        'date': editedDate,
+      });
+      print("Document updated");
+    } catch (error) {
+      print("Error updating document: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -280,12 +291,23 @@ class _AddNewTaskModelState extends State<AddNewTaskModel> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {
-                          if (!_validateInputFields()) {
-                              _saveDataToFirestore();
-                  
+                          if (!_validateInputFields() &&
+                              widget.documentId == '') {
+                            _saveDataToFirestore();
+                          } else {
+                            _updateTaskInFirestore(
+                                widget.documentId,
+                                fromWhereController.text,
+                                toWhereController.text,
+                                arrTimeTaskController.text,
+                                deptTimeTaskController.text,
+                                dateTaskController.text);
+                            Navigator.pop(context);
                           }
                         },
-                        child: Text('create'),
+                        child: widget.documentId == ''
+                            ? Text('create')
+                            : Text('update'),
                       ),
                     ),
                   ],
