@@ -51,6 +51,8 @@ dependencies:
   google_maps_webservice: ^0.0.19
   flutter_google_places: ^0.3.0
   flutter_riverpod: ^2.3.6
+  flutter_polyline_points: ^1.0.0
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:

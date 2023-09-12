@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -290,44 +291,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     SizedBox(
                       height: 50,
                       width: 150,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          AnimatedOpacity(
-                            opacity: isLoading ? 0.0 : 1.0,
-                            duration: Duration(milliseconds: 200),
-                            child: ButtonWidget(
-                              title: "Submit",
-                              onPress: () async {
-                                final phoneNumber = phoneNoController.text;
-                                final email = emailController.text;
-                                if (_validatePhoneNumber(phoneNumber) &&
-                                    _validateEmail(email)) {
-                                  await _saveUserProfile();
-                                } else {
-                                  showSnackBar('Invalid phone number or email');
-                                }
-                              },
-                            ),
-                          ),
-                          AnimatedOpacity(
-                            opacity: isLoading ? 1.0 : 0.0,
-                            duration: Duration(milliseconds: 200),
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                              ),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 3,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.deepPurple),
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: ButtonWidget(
+                        title: "Submit",
+                        onPress: () async {
+                          final phoneNumber = phoneNoController.text;
+                          final email = emailController.text;
+                          if (_validatePhoneNumber(phoneNumber) &&
+                              _validateEmail(email)) {
+                            await _saveUserProfile();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        TwoFactorAuthScreen()));
+                          } else {
+                            showSnackBar('Invalid phone number or email');
+                          }
+                        },
                       ),
                     ),
                   ],

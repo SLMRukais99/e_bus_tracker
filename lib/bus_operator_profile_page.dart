@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:e_bus_tracker/bostarttrip.dart';
+import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,11 +40,14 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
 
   Future<String?> _uploadImage(File image) async {
     try {
+      // Generate a unique filename for each uploaded image
+      final uniqueFileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+
       // Upload the image to Firebase Storage
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('bus_operator_profile_images')
-          .child('image.jpg');
+          .child(uniqueFileName);
       final uploadTask = storageRef.putFile(image);
 
       // Get the download URL
@@ -80,25 +85,19 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
     });
 
     try {
-      // Add the user profile data to Firestore
-      await FirebaseFirestore.instance.collection('userProfiles').add({
-        'name': name,
-        'homeAddress': homeAddress,
-        'phoneNumber': phoneNumber,
-        'email': email,
-        'busNo': busNo,
-      });
+      // Upload the image
       String? downloadURL;
       if (image != null) {
         downloadURL = await _uploadImage(image!);
       }
 
-      // Add the user profile data to Firestore
+      // Add the bus operator profile data to Firestore
       final busOperatorProfileData = {
         'name': name,
         'homeAddress': homeAddress,
         'phoneNumber': phoneNumber,
         'email': email,
+        'busNo': busNo,
         'profileImageURL': downloadURL,
       };
       await FirebaseFirestore.instance
@@ -116,7 +115,10 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
       });
 
       // Navigate to the home screen
-      // Example: Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => BOStartTrip()),
+      );
     } catch (e) {
       // Handle any errors that occur during saving
       print('Error saving user profile: $e');
@@ -146,6 +148,16 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
         content: Text(message),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    homeController.dispose();
+    phoneNoController.dispose();
+    emailController.dispose();
+    busnoController.dispose();
+    super.dispose();
   }
 
   @override
@@ -292,7 +304,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                         labelStyle: TextStyle(
                           color: Colors.deepPurple,
                         ),
-                        hintText: 'Enter your home email',
+                        hintText: 'Enter your email',
                         prefixIcon: Icon(
                           Icons.email_outlined,
                           color: Colors.deepPurple,
@@ -320,46 +332,24 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                     SizedBox(
                       height: 50,
                       width: 150,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          AnimatedOpacity(
-                            opacity: isLoading ? 0.0 : 1.0,
-                            duration: Duration(milliseconds: 200),
-                            child: ButtonWidget(
-                              title: "Submit",
-                              onPress: () async {
-                                final phoneNumber = phoneNoController.text;
-                                final email = emailController.text;
-                                if (_validatePhoneNumber(phoneNumber) &&
-                                    _validateEmail(email)) {
-                                  await _saveUserProfile();
-                                  Navigator.pushReplacementNamed(
-                                      context, 'home');
-                                } else {
-                                  showSnackBar('Invalid phone number or email');
-                                }
-                              },
-                            ),
-                          ),
-                          AnimatedOpacity(
-                            opacity: isLoading ? 1.0 : 0.0,
-                            duration: Duration(milliseconds: 400),
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                              ),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.deepPurple),
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: ButtonWidget(
+                        title: "Submit",
+                        onPress: () async {
+                          final phoneNumber = phoneNoController.text;
+                          final email = emailController.text;
+                          if (_validatePhoneNumber(phoneNumber) &&
+                              _validateEmail(email)) {
+                            await _saveUserProfile();
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TwoFactorAuthScreen()),
+                            );
+                          } else {
+                            showSnackBar('Invalid phone number or email');
+                          }
+                        },
                       ),
                     ),
                   ],
