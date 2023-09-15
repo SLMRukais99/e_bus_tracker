@@ -16,8 +16,8 @@ class AddNewTaskModel extends StatefulWidget {
   AddNewTaskModel(
       {this.fromWhere = '',
       this.toWhere = '',
-      this.arrTimeTask = '',
       this.deptTimeTask = '',
+      this.arrTimeTask = '',
       this.dateTask = '',
       required Null Function(dynamic editedFrom, dynamic editedTo,
               dynamic editedArrTime, dynamic editedDeptTime, dynamic editedDate)
@@ -64,15 +64,13 @@ class _AddNewTaskModelState extends State<AddNewTaskModel> {
       final CollectionReference busScheduleCollection =
           FirebaseFirestore.instance.collection('busShedule');
 
-
-        await busScheduleCollection.add({
-          'fromWhere': fromWhereController.text,
-          'toWhere': toWhereController.text,
-          'arrTimeTask': arrTimeTaskController.text,
-          'deptTimeTask': deptTimeTaskController.text,
-          'date': dateTaskController.text,
-        });
-      
+      await busScheduleCollection.add({
+        'fromWhere': fromWhereController.text,
+        'toWhere': toWhereController.text,
+        'arrTimeTask': arrTimeTaskController.text,
+        'deptTimeTask': deptTimeTaskController.text,
+        'date': dateTaskController.text,
+      });
 
       Navigator.pop(context); // Close the bottom sheet
     } catch (error) {
@@ -113,7 +111,7 @@ class _AddNewTaskModelState extends State<AddNewTaskModel> {
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(30),
-          height: MediaQuery.of(context).size.height * 0.8,
+          height: MediaQuery.of(context).size.height * 0.85,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
@@ -198,32 +196,6 @@ class _AddNewTaskModelState extends State<AddNewTaskModel> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     DateTimeWidget(
-                      titleText: 'Arrival Time',
-                      valueText:
-                          '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}',
-                      iconSection: CupertinoIcons.clock,
-                      onTap: () async {
-                        final time = await pickTime();
-                        if (time == null) return;
-
-                        final newDateTime = DateTime(
-                            dateTime.year,
-                            dateTime.month,
-                            dateTime.day,
-                            time.hour,
-                            time.minute);
-
-                        setState(() {
-                          dateTime = newDateTime;
-                        });
-                        arrTimeTaskController.text =
-                            '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-                      },
-                    ),
-                    SizedBox(
-                      width: 22,
-                    ),
-                    DateTimeWidget(
                       titleText: 'Depature Time',
                       valueText:
                           '${dateTime1.hour.toString().padLeft(2, '0')}:${dateTime1.minute.toString().padLeft(2, '0')}',
@@ -244,6 +216,32 @@ class _AddNewTaskModelState extends State<AddNewTaskModel> {
                         });
                         deptTimeTaskController.text =
                             '${time1.hour.toString().padLeft(2, '0')}:${time1.minute.toString().padLeft(2, '0')}';
+                      },
+                    ),
+                    SizedBox(
+                      width: 22,
+                    ),
+                    DateTimeWidget(
+                      titleText: 'Arrival Time',
+                      valueText:
+                          '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}',
+                      iconSection: CupertinoIcons.clock,
+                      onTap: () async {
+                        final time = await pickTime();
+                        if (time == null) return;
+
+                        final newDateTime = DateTime(
+                            dateTime.year,
+                            dateTime.month,
+                            dateTime.day,
+                            time.hour,
+                            time.minute);
+
+                        setState(() {
+                          dateTime = newDateTime;
+                        });
+                        arrTimeTaskController.text =
+                            '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
                       },
                     ),
                   ],
@@ -273,7 +271,7 @@ class _AddNewTaskModelState extends State<AddNewTaskModel> {
                         onPressed: () {
                           Navigator.pop(context); // Close the bottom sheet
                         },
-                        child: Text('cancel'),
+                        child: Text('Cancel'),
                       ),
                     ),
                     SizedBox(
@@ -306,8 +304,8 @@ class _AddNewTaskModelState extends State<AddNewTaskModel> {
                           }
                         },
                         child: widget.documentId == ''
-                            ? Text('create')
-                            : Text('update'),
+                            ? Text('Create')
+                            : Text('Update'),
                       ),
                     ),
                   ],

@@ -15,8 +15,8 @@ class CardTodoListWidget extends StatelessWidget {
     required this.fromWhere,
     required this.toWhere,
     required this.date,
-    required this.arrTimeTask,
     required this.deptTimeTask,
+    required this.arrTimeTask,
   });
 
   void _deleteData(BuildContext context, String documentId) async {
@@ -43,7 +43,7 @@ class CardTodoListWidget extends StatelessWidget {
         return Container(
           height: MediaQuery.of(context).size.height * 0.85,
           child: AddNewTaskModel(
-            documentId:documentId,
+            documentId: documentId,
             fromWhere: fromWhere,
             toWhere: toWhere,
             arrTimeTask: arrTimeTask,
@@ -128,7 +128,7 @@ class CardTodoListWidget extends StatelessWidget {
                           GestureDetector(
                             onTap: () {
                               _editTask(context, documentId, fromWhere, toWhere,
-                                  arrTimeTask, deptTimeTask, date);
+                                  deptTimeTask, arrTimeTask, date);
                             },
                             child: Icon(
                               Icons.edit,
@@ -205,7 +205,7 @@ class CardTodoListWidget extends StatelessWidget {
                                 Text(
                                   arrTimeTask.isNotEmpty &&
                                           deptTimeTask.isNotEmpty
-                                      ? '$arrTimeTask - $deptTimeTask'
+                                      ? '$deptTimeTask - $arrTimeTask'
                                       : 'No time available',
                                 ),
                               ],

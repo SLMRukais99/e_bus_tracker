@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_bus_tracker/common/show_model.dart';
 
-
 class BusScheduleScreen extends StatefulWidget {
   const BusScheduleScreen({Key? key}) : super(key: key);
 
@@ -25,7 +24,7 @@ class _BusScheduleScreenState extends State<BusScheduleScreen> {
         elevation: 0,
         toolbarHeight: 50,
         title: Text(
-          'Bus Schedules',
+          'Bus Schedule',
           style: TextStyle(fontSize: 24),
         ),
         actions: [
@@ -33,13 +32,12 @@ class _BusScheduleScreenState extends State<BusScheduleScreen> {
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-               IconButton(
-  onPressed: () {
-    _showDatePicker(context);
-  },
-  icon: const Icon(CupertinoIcons.calendar),
-),
-                
+                IconButton(
+                  onPressed: () {
+                    _showDatePicker(context);
+                  },
+                  icon: const Icon(CupertinoIcons.calendar),
+                ),
               ],
             ),
           ),
@@ -67,7 +65,6 @@ class _BusScheduleScreenState extends State<BusScheduleScreen> {
                           color: Colors.black,
                         ),
                       ),
-                    
                     ],
                   ),
                   ElevatedButton(
@@ -86,7 +83,11 @@ class _BusScheduleScreenState extends State<BusScheduleScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        builder: (context) => AddNewTaskModel(onSave: (editedFrom, editedTo, editedArrTime, editedDeptTime, editedDate) {  },documentId: '',),
+                        builder: (context) => AddNewTaskModel(
+                          onSave: (editedFrom, editedTo, editedDeptTime,
+                              editedArrTime, editedDate) {},
+                          documentId: '',
+                        ),
                       );
                     },
                     child: const Text(
@@ -97,68 +98,66 @@ class _BusScheduleScreenState extends State<BusScheduleScreen> {
                 ],
               ),
               SizedBox(height: 20),
-
               StreamBuilder<QuerySnapshot>(
-              stream: _busSchedule.snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-                          
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                }
-                          
-                final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
-                          
-                return ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: documents.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    final Map<String, dynamic>? data =
-                        documents[index].data() as Map<String, dynamic>?;
-                          
-                    final String toWhere = data?['toWhere'] ?? '';
-                    final String date = data?['date'] ?? '';
-                    final String arrTimeTask = data?['arrTimeTask'] ?? '';
-                    final String deptTimeTask = data?['deptTimeTask'] ?? '';
-                          
-                    return CardTodoListWidget(
-                        documentId: documents[index].id,
-                      fromWhere: data?['fromWhere'] ?? '',
-                      toWhere: toWhere,
-                      date: date,
-                   arrTimeTask: arrTimeTask,
-                      deptTimeTask: deptTimeTask,
-                      
-                      
-                    );
-                  },
-                );
-              },
-                          ),
+                stream: _busSchedule.snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
 
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+
+                  final List<QueryDocumentSnapshot> documents =
+                      snapshot.data!.docs;
+
+                  return ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: documents.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final Map<String, dynamic>? data =
+                          documents[index].data() as Map<String, dynamic>?;
+
+                      final String toWhere = data?['toWhere'] ?? '';
+                      final String date = data?['date'] ?? '';
+                      final String deptTimeTask = data?['deptTimeTask'] ?? '';
+                      final String arrTimeTask = data?['arrTimeTask'] ?? '';
+
+                      return CardTodoListWidget(
+                        documentId: documents[index].id,
+                        fromWhere: data?['fromWhere'] ?? '',
+                        toWhere: toWhere,
+                        date: date,
+                        deptTimeTask: deptTimeTask,
+                        arrTimeTask: arrTimeTask,
+                      );
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),
       ),
     );
   }
-  
- Future<void> _showDatePicker(BuildContext context) async {
-  final DateTime currentDate = DateTime.now();
 
-  final DateTime? selectedDate = await showDatePicker(
-    context: context,
-    initialDate: currentDate,
-    firstDate: currentDate.subtract(Duration(days: 365)), // One year ago
-    lastDate: currentDate.add(Duration(days: 365)), // One year in the future
-  );
+  Future<void> _showDatePicker(BuildContext context) async {
+    final DateTime currentDate = DateTime.now();
 
-  if (selectedDate != null && selectedDate != currentDate) {
-    // Handle the selected date
-    // You can update the UI or perform any actions here
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: currentDate,
+      firstDate: currentDate.subtract(Duration(days: 365)), // One year ago
+      lastDate: currentDate.add(Duration(days: 365)), // One year in the future
+    );
+
+    if (selectedDate != null && selectedDate != currentDate) {
+      // Handle the selected date
+      // You can update the UI or perform any actions here
+    }
   }
-}
 }

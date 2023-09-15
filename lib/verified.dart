@@ -1,4 +1,4 @@
-import 'package:e_bus_tracker/bostarttrip.dart';
+import 'package:e_bus_tracker/login.dart';
 import 'package:flutter/material.dart';
 
 class VerificationScreen extends StatelessWidget {
@@ -32,11 +32,8 @@ class VerificationScreen extends StatelessWidget {
                   SizedBox(height: 24.0),
                   ElevatedButton(
                     onPressed: () {
-                      // Add your button functionality here
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BOStartTrip()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Login()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,

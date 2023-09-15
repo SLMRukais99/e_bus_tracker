@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:e_bus_tracker/bostarttrip.dart';
-import 'package:e_bus_tracker/login.dart';
+import 'package:e_bus_tracker/passengerhome.dart';
 import 'package:e_bus_tracker/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 
 class SplashScreenPage extends StatefulWidget {
   @override
@@ -12,6 +13,8 @@ class SplashScreenPage extends StatefulWidget {
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore =
+      FirebaseFirestore.instance; // Firestore instance
 
   @override
   void initState() {
@@ -22,11 +25,37 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   void startTimer() {
     Timer(const Duration(seconds: 5), () async {
       if (_auth.currentUser != null) {
-        // Send user to home screen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (c) => BOStartTrip()),
-        );
+        // Fetch user role from Firestore
+        DocumentSnapshot userSnapshot = await _firestore
+            .collection('users')
+            .doc(_auth.currentUser!.uid)
+            .get();
+
+        if (userSnapshot.exists) {
+          String userRole = userSnapshot.get('role');
+
+          // Navigate based on user role
+          if (userRole == 'passenger') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (c) =>
+                      PassengerHomeScreen()), // Replace with passenger home page
+            );
+          } else if (userRole == 'busOperator') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (c) =>
+                      BOStartTrip()), // Replace with bus operator home page
+            );
+          }
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (c) => SignUp()),
+          );
+        }
       } else {
         Navigator.pushReplacement(
           context,

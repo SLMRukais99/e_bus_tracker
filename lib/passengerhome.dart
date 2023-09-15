@@ -12,14 +12,14 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:location/location.dart' as location_lib;
 import 'package:url_launcher/url_launcher.dart';
 
-class BOStartTrip extends StatefulWidget {
-  const BOStartTrip({Key? key}) : super(key: key);
+class PassengerHomeScreen extends StatefulWidget {
+  const PassengerHomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<BOStartTrip> createState() => _BOStartTripState();
+  State<PassengerHomeScreen> createState() => _PassengerHomeScreenState();
 }
 
-class _BOStartTripState extends State<BOStartTrip> {
+class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
   int _currentIndex = 0;
 
   final Completer<GoogleMapController> _controllerGoogleMap =
@@ -30,6 +30,7 @@ class _BOStartTripState extends State<BOStartTrip> {
   location_lib.Location location = location_lib.Location();
   Set<Marker> markers = {};
 
+  TextEditingController _departureController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
   gm_places.GoogleMapsPlaces _places = gm_places.GoogleMapsPlaces(
       apiKey: "AIzaSyAZ1LALf2ubP2J4gxXPlra09XPf9TCaYDE");
@@ -175,19 +176,28 @@ class _BOStartTripState extends State<BOStartTrip> {
               child: Column(
                 children: [
                   TextField(
-                    controller: _destinationController,
+                    controller: _departureController,
                     onChanged: _onDestinationChanged,
                     decoration: InputDecoration(
-                      labelText: 'Destination',
-                      hintText: 'Enter destination...',
+                      labelText: 'Departure Location',
+                      hintText: 'Enter departure...',
                       prefixIcon: Icon(Icons.location_on),
                     ),
                   ),
-                  SizedBox(height: 20.0),
-                  Text(
-                    "Press on 'Target Icon Button' in the map to get \nyour current location before starting the trip.",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _destinationController,
+                    onChanged: _onDestinationChanged,
+                    decoration: InputDecoration(
+                      labelText: 'Destination Location',
+                      hintText: 'Enter destination...',
+                      prefixIcon: Icon(Icons.location_on),
+                    ),
                   ),
                   SizedBox(height: 15.0),
                   SizedBox(

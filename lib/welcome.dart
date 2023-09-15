@@ -1,5 +1,4 @@
 import 'package:e_bus_tracker/bus_operator_profile_page.dart';
-import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/signup.dart';
 import 'package:e_bus_tracker/user_profile_page.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';

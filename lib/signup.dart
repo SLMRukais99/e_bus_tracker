@@ -59,22 +59,6 @@ ValidateForm(BuildContext context) async {
             message: "Processing. Please wait...",
           );
         });
-  }
-
-  try {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: _emailTextController.text.trim(),
-      password: _passwordTextController.text,
-    ); // Account creation successful, navigate to the next screen
-
-    // Store user type and other details in Firestore
-    await postDetailsToFirestore(
-      _emailTextController.text,
-      _selectedUserType == UserType.passenger ? 'passenger' : 'busOperator',
-    );
-
-    clearUserInput(); // Call the function to clear user input
-
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -82,8 +66,23 @@ ValidateForm(BuildContext context) async {
         // Convert enum to string
       ),
     );
-  } on FirebaseAuthException catch (e) {
-    _errorMessage = e.message ?? "Unknown error occurred.";
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailTextController.text.trim(),
+        password: _passwordTextController.text,
+      ); // Account creation successful, navigate to the next screen
+
+      // Store user type and other details in Firestore
+      await postDetailsToFirestore(
+        _emailTextController.text,
+        _selectedUserType == UserType.passenger ? 'passenger' : 'busOperator',
+      );
+
+      clearUserInput(); // Call the function to clear user input
+    } on FirebaseAuthException catch (e) {
+      _errorMessage = e.message ?? "Unknown error occurred.";
+    }
   }
 }
 

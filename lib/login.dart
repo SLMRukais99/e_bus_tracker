@@ -1,5 +1,5 @@
 import 'package:e_bus_tracker/forgot_password.dart';
-import 'package:e_bus_tracker/home.dart';
+import 'package:e_bus_tracker/passengerhome.dart';
 import 'package:e_bus_tracker/services/firebase_services.dart';
 import 'package:e_bus_tracker/signup.dart';
 import 'package:e_bus_tracker/bostarttrip.dart';
@@ -80,7 +80,7 @@ class _LoginState extends State<Login> {
       if (UserType == "passenger") {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => PassengerHomeScreen()),
         );
       } else if (UserType == "busOperator") {
         Navigator.push(
@@ -130,7 +130,7 @@ class _LoginState extends State<Login> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomeScreen(),
+              builder: (context) => PassengerHomeScreen(),
             ),
           );
         }
