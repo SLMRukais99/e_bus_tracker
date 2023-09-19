@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'bus_shedule.dart';
 import 'navigation/bottom_navigation.dart';
-import 'profileType.dart';
+import 'viewBOprofile.dart';
 
 class RatingScreen extends StatefulWidget {
   const RatingScreen({super.key});
