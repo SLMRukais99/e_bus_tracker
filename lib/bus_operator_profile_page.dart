@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:e_bus_tracker/bostarttrip.dart';
 import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -91,6 +92,8 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
         downloadURL = await _uploadImage(image!);
       }
 
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+
       // Add the bus operator profile data to Firestore
       final busOperatorProfileData = {
         'name': name,
@@ -102,7 +105,8 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
       };
       await FirebaseFirestore.instance
           .collection('busOperatorProfiles')
-          .add(busOperatorProfileData);
+          .doc(_auth.currentUser!.uid)
+          .set(busOperatorProfileData);
 
       setState(() {
         nameController.clear();

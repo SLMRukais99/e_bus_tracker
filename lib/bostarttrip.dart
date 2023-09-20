@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:e_bus_tracker/bus_shedule.dart';
 import 'package:e_bus_tracker/navigation/bottom_navigation.dart';
-import 'package:e_bus_tracker/profileType.dart';
+import 'package:e_bus_tracker/ratings.dart';
+import 'package:e_bus_tracker/viewBOprofile.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:e_bus_tracker/boendtrip.dart';
@@ -237,6 +238,12 @@ class _BOStartTripState extends State<BOStartTrip> {
                     );
                   } else if (index == 2) {
                     // Navigate to star
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RatingScreen(),
+                      ),
+                    );
                   } else if (index == 3) {
                     Navigator.push(
                       context,
