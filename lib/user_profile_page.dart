@@ -20,7 +20,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   TextEditingController phoneNoController = TextEditingController();
   TextEditingController emailController = TextEditingController();
 
-  File? image; // Holds the selected image
+  File? imageX; // Holds the selected image
   bool isLoading = false;
 
   Future<void> _pickImage(ImageSource source) async {
@@ -29,19 +29,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     if (pickedImage != null) {
       setState(() {
-        image = File(pickedImage.path);
+        imageX = File(pickedImage.path);
       });
     }
   }
 
-  Future<String?> _uploadImage(File image) async {
+  Future<String?> _uploadImage(File imageX) async {
     try {
       // Upload the image to Firebase Storage
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('user_profile_images')
           .child('image.jpg');
-      final uploadTask = storageRef.putFile(image);
+      final uploadTask = storageRef.putFile(imageX);
 
       // Get the download URL
       final snapshot = await uploadTask;
@@ -79,8 +79,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     try {
       // Upload the image
       String? downloadURL;
-      if (image != null) {
-        downloadURL = await _uploadImage(image!);
+      if (imageX != null) {
+        downloadURL = await _uploadImage(imageX!);
       }
 
       // Add the user profile data to Firestore
@@ -100,7 +100,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         homeController.clear();
         phoneNoController.clear();
         emailController.clear();
-        image = null;
+        imageX = null;
         isLoading = false;
       });
 
@@ -194,11 +194,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             color: Color(0xFF808080),
                           ),
                           child: Center(
-                            child: image != null
+                            child: imageX != null
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(60),
                                     child: Image.file(
-                                      image!,
+                                      imageX!,
                                       width: 120,
                                       height: 120,
                                       fit: BoxFit.cover,

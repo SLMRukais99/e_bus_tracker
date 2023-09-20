@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:e_bus_tracker/bus_shedule.dart';
 import 'package:e_bus_tracker/navigation/bottom_navigation.dart';
-import 'package:e_bus_tracker/profileType.dart';
+import 'package:e_bus_tracker/viewBOprofile.dart';
 import 'package:e_bus_tracker/ratings.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
