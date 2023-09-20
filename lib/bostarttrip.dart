@@ -212,44 +212,44 @@ class _BOStartTripState extends State<BOStartTrip> {
                   ],
                 ),
               ),
-            ),
-            SizedBox(height: 20.0),
-            BottomNavigation(
-              currentIndex: _currentIndex,
-              onTabTapped: (index) {
-                setState(() {
-                  _currentIndex = index;
-                  if (index == 0) {
-                    // Navigate to home
-                  } else if (index == 1) {
-                    // Navigate to schedule
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BusScheduleScreen(),
-                      ),
-                    );
-                  } else if (index == 2) {
-                    // Navigate to star
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RatingScreen(),
-                      ),
-                    );
-                  } else if (index == 3) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProfileTypeScreen(),
-                      ),
-                    );
-                  }
-                });
-              },
-            ),
-          ],
-        ),
+            ],
+          ),
+          SizedBox(height: 20.0),
+          BottomNavigation(
+            currentIndex: _currentIndex,
+            onTabTapped: (index) {
+              setState(() {
+                _currentIndex = index;
+                if (index == 0) {
+                  // Navigate to home
+                } else if (index == 1) {
+                  // Navigate to schedule
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BusScheduleScreen(),
+                    ),
+                  );
+                } else if (index == 2) {
+                  // Navigate to star
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RatingScreen(),
+                    ),
+                  );
+                } else if (index == 3) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfileTypeScreen(),
+                    ),
+                  );
+                }
+              });
+            },
+          ),
+        ],
       ),
     );
   }
