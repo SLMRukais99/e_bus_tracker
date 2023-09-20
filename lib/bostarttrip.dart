@@ -84,18 +84,6 @@ class _BOStartTripState extends State<BOStartTrip> {
     } else {
       print("Could not launch Google Maps");
     }
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BOEndTrip(
-          startLocationLatLng: LatLng(
-            currentLocation.latitude!,
-            currentLocation.longitude!,
-          ),
-          destinationLatLng: destinationLatLng,
-        ),
-      ),
-    );
   }
 
   void _onDestinationChanged(String value) async {
@@ -144,80 +132,85 @@ class _BOStartTripState extends State<BOStartTrip> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: double.infinity,
-              height: 550,
-              padding: EdgeInsets.all(5.0),
-              child: GoogleMap(
-                mapType: MapType.normal,
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(currentLocation.latitude ?? 0,
-                      currentLocation.longitude ?? 0),
-                  zoom: 14.0,
+      body: ListView(
+        shrinkWrap: true,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: double.infinity,
+                height: 550,
+                padding: EdgeInsets.all(5.0),
+                child: GoogleMap(
+                  mapType: MapType.normal,
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(currentLocation.latitude ?? 0,
+                        currentLocation.longitude ?? 0),
+                    zoom: 14.0,
+                  ),
+                  padding: EdgeInsets.only(top: 50),
+                  onMapCreated: (GoogleMapController controller) {
+                    _controllerGoogleMap.complete(controller);
+                    newGoogleMapController = controller;
+                  },
+                  markers: markers,
                 ),
-                padding: EdgeInsets.only(top: 50),
-                onMapCreated: (GoogleMapController controller) {
-                  _controllerGoogleMap.complete(controller);
-                  newGoogleMapController = controller;
-                },
-                markers: markers,
               ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _destinationController,
-                    onChanged: _onDestinationChanged,
-                    decoration: InputDecoration(
-                      labelText: 'Destination',
-                      hintText: 'Enter destination...',
-                      prefixIcon: Icon(Icons.location_on),
+              Container(
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _destinationController,
+                      onChanged: _onDestinationChanged,
+                      decoration: InputDecoration(
+                        labelText: 'Destination',
+                        hintText: 'Enter destination...',
+                        prefixIcon: Icon(Icons.location_on),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20.0),
-                  Text(
-                    "Press on 'Target Icon Button' in the map to get \nyour current location before starting the trip.",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 15.0),
-                  SizedBox(
-                    height: 50,
-                    width: 150,
-                    child: ButtonWidget(
-                      title: "Start Trip",
-                      onPress: () {
-                        if (_destinationController.text.isEmpty) {
-                          _showErrorSnackBar("Please enter a destination.");
-                          return;
-                        }
+                    SizedBox(height: 20.0),
+                    Text(
+                      "Press on 'Target Icon Button' in the map to get \nyour current location before starting the trip.",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 15.0),
+                    SizedBox(
+                      height: 50,
+                      width: 150,
+                      child: ButtonWidget(
+                        title: "Start Trip",
+                        onPress: () {
+                          if (_destinationController.text.isEmpty) {
+                            _showErrorSnackBar("Please enter a destination.");
+                            return;
+                          }
 
-                        if (markers.isNotEmpty) {
-                          LatLng destinationLatLng = markers
-                              .where((marker) =>
-                                  marker.markerId ==
-                                  MarkerId('destinationLocation'))
-                              .first
-                              .position;
-                          _startJourney(destinationLatLng);
-                        } else {
-                          _showErrorSnackBar(
-                              "Please select a valid destination.");
-                        }
-                      },
+                          if (markers.isNotEmpty) {
+                            LatLng destinationLatLng = markers
+                                .where((marker) =>
+                                    marker.markerId ==
+                                    MarkerId('destinationLocation'))
+                                .first
+                                .position;
+                            _startJourney(destinationLatLng);
+                          } else {
+                            _showErrorSnackBar(
+                                "Please select a valid destination.");
+                          }
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 20.0),

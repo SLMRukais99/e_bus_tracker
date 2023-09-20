@@ -20,7 +20,7 @@ class BusOperatorProfileScreen extends StatefulWidget {
 
 class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
   TextEditingController nameController = TextEditingController();
-  TextEditingController homeController = TextEditingController();
+  TextEditingController routeController = TextEditingController();
   TextEditingController phoneNoController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController busnoController = TextEditingController();
@@ -66,7 +66,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
 
   Future<void> _saveUserProfile() async {
     final name = nameController.text;
-    final homeAddress = homeController.text;
+    final route = routeController.text;
     final phoneNumber = phoneNoController.text;
     final email = emailController.text;
     final busNo = busnoController.text;
@@ -97,7 +97,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
       // Add the bus operator profile data to Firestore
       final busOperatorProfileData = {
         'name': name,
-        'homeAddress': homeAddress,
+        'route': route,
         'phoneNumber': phoneNumber,
         'email': email,
         'busNo': busNo,
@@ -110,7 +110,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
 
       setState(() {
         nameController.clear();
-        homeController.clear();
+        routeController.clear();
         phoneNoController.clear();
         emailController.clear();
         busnoController.clear();
@@ -157,7 +157,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
   @override
   void dispose() {
     nameController.dispose();
-    homeController.dispose();
+    routeController.dispose();
     phoneNoController.dispose();
     emailController.dispose();
     busnoController.dispose();
@@ -269,15 +269,30 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                     ),
                     SizedBox(height: 16.0),
                     TextField(
-                      controller: homeController,
+                      controller: routeController,
                       decoration: InputDecoration(
-                        labelText: 'Address',
+                        labelText: 'Bus Route',
                         labelStyle: TextStyle(
                           color: Colors.deepPurple,
                         ),
-                        hintText: 'Enter your home address',
+                        hintText: 'Enter the bus route',
                         prefixIcon: Icon(
                           Icons.home_outlined,
+                          color: Colors.deepPurple,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    TextField(
+                      controller: busnoController,
+                      decoration: InputDecoration(
+                        labelText: 'Bus No',
+                        labelStyle: TextStyle(
+                          color: Colors.deepPurple,
+                        ),
+                        hintText: 'Enter your bus number',
+                        prefixIcon: Icon(
+                          Icons.airport_shuttle_outlined,
                           color: Colors.deepPurple,
                         ),
                       ),
@@ -311,21 +326,6 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                         hintText: 'Enter your email',
                         prefixIcon: Icon(
                           Icons.email_outlined,
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16.0),
-                    TextField(
-                      controller: busnoController,
-                      decoration: InputDecoration(
-                        labelText: 'Bus No',
-                        labelStyle: TextStyle(
-                          color: Colors.deepPurple,
-                        ),
-                        hintText: 'Enter your bus number',
-                        prefixIcon: Icon(
-                          Icons.airport_shuttle_outlined,
                           color: Colors.deepPurple,
                         ),
                       ),

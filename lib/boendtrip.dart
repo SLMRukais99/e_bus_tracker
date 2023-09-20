@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:e_bus_tracker/bus_shedule.dart';
 import 'package:e_bus_tracker/navigation/bottom_navigation.dart';
 import 'package:e_bus_tracker/profileType.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
@@ -10,6 +11,8 @@ import 'package:e_bus_tracker/bostarttrip.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'ratings.dart';
 
 class BOEndTrip extends StatefulWidget {
   final LatLng startLocationLatLng;
@@ -219,8 +222,20 @@ class _BOEndTripState extends State<BOEndTrip> {
                     );
                   } else if (index == 1) {
                     // Navigate to schedule
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BusScheduleScreen(),
+                      ),
+                    );
                   } else if (index == 2) {
                     // Navigate to star
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RatingScreen(),
+                      ),
+                    );
                   } else if (index == 3) {
                     Navigator.push(
                       context,

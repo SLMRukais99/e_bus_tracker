@@ -1,8 +1,12 @@
+import 'package:e_bus_tracker/ratings.dart';
 import 'package:e_bus_tracker/widget/crad_todo_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_bus_tracker/common/show_model.dart';
+import 'bostarttrip.dart';
+import 'navigation/bottom_navigation.dart';
+import 'profileType.dart';
 
 class BusScheduleScreen extends StatefulWidget {
   const BusScheduleScreen({Key? key}) : super(key: key);
@@ -12,6 +16,8 @@ class BusScheduleScreen extends StatefulWidget {
 }
 
 class _BusScheduleScreenState extends State<BusScheduleScreen> {
+  int _currentIndex = 1;
+
   final CollectionReference _busSchedule =
       FirebaseFirestore.instance.collection('busShedule');
 
@@ -43,104 +49,147 @@ class _BusScheduleScreenState extends State<BusScheduleScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Upcoming Schedule",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+      body: ListView(
+        shrinkWrap: true,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text(
+                          "Upcoming Schedule",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                      foregroundColor: Colors.white,
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      ],
                     ),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        foregroundColor: Colors.white,
+                        elevation: 5,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        builder: (context) => AddNewTaskModel(
-                          onSave: (editedFrom, editedTo, editedDeptTime,
-                              editedArrTime, editedDate) {},
-                          documentId: '',
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      '+ Add Schedule',
-                      style: TextStyle(color: Colors.grey),
+                      ),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          builder: (context) => AddNewTaskModel(
+                            onSave: (editedFrom, editedTo, editedDeptTime,
+                                editedArrTime, editedDate) {},
+                            documentId: '',
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        '+ Add Schedule',
+                        style: TextStyle(color: Colors.grey),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              StreamBuilder<QuerySnapshot>(
-                stream: _busSchedule.snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
+                  ],
+                ),
+                SizedBox(height: 20),
+                StreamBuilder<QuerySnapshot>(
+                  stream: _busSchedule.snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
 
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
 
-                  final List<QueryDocumentSnapshot> documents =
-                      snapshot.data!.docs;
+                    final List<QueryDocumentSnapshot> documents =
+                        snapshot.data!.docs;
 
-                  return ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: documents.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      final Map<String, dynamic>? data =
-                          documents[index].data() as Map<String, dynamic>?;
+                    return ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: documents.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final Map<String, dynamic>? data =
+                            documents[index].data() as Map<String, dynamic>?;
 
-                      final String toWhere = data?['toWhere'] ?? '';
-                      final String date = data?['date'] ?? '';
-                      final String deptTimeTask = data?['deptTimeTask'] ?? '';
-                      final String arrTimeTask = data?['arrTimeTask'] ?? '';
+                        final String toWhere = data?['toWhere'] ?? '';
+                        final String date = data?['date'] ?? '';
+                        final String deptTimeTask = data?['deptTimeTask'] ?? '';
+                        final String arrTimeTask = data?['arrTimeTask'] ?? '';
 
-                      return CardTodoListWidget(
-                        documentId: documents[index].id,
-                        fromWhere: data?['fromWhere'] ?? '',
-                        toWhere: toWhere,
-                        date: date,
-                        deptTimeTask: deptTimeTask,
-                        arrTimeTask: arrTimeTask,
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
+                        return CardTodoListWidget(
+                          documentId: documents[index].id,
+                          fromWhere: data?['fromWhere'] ?? '',
+                          toWhere: toWhere,
+                          date: date,
+                          deptTimeTask: deptTimeTask,
+                          arrTimeTask: arrTimeTask,
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigation(
+        currentIndex: _currentIndex,
+        onTabTapped: (index) {
+          setState(() {
+            _currentIndex = index;
+            if (index == 0) {
+              // Navigate to home
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BOStartTrip(),
+                ),
+              );
+            } else if (index == 1) {
+              // Navigate to schedule
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BusScheduleScreen(),
+                ),
+              );
+            } else if (index == 2) {
+              // Navigate to star
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RatingScreen(),
+                ),
+              );
+            } else if (index == 3) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileTypeScreen(),
+                ),
+              );
+            }
+          });
+        },
       ),
     );
   }
