@@ -50,7 +50,23 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
         title: Text("Profile"),
-        actions: [],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              await FirebaseServices().signOutUser();
+              FirebaseAuth.instance.signOut().then((value) {
+                print("Signed Out");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Login(),
+                  ),
+                );
+              });
+            },
+          ),
+        ],
       ),
       body: FutureBuilder(
           future: futuredata,
@@ -76,7 +92,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: 30,
+                          height: 28,
                         ),
                         GestureDetector(
                           onTap: () {
@@ -86,7 +102,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                             backgroundColor: Colors.deepPurpleAccent,
                             minRadius: 70.0,
                             child: CircleAvatar(
-                              radius: 63.0,
+                              radius: 67.0,
                               backgroundImage: imageXFile == null
                                   ? (data.profileImageURL != null &&
                                           data.profileImageURL!.isNotEmpty
@@ -105,92 +121,192 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                           (data.name ?? ''),
                           style: TextStyle(
                             fontSize: 20.0,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
                         ),
                         const SizedBox(
                           height: 40,
                         ),
-                        Text(
-                          'Bus Name : ' + (data.busName ?? ''),
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'Bus Number :' + (data.busNo ?? ''),
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'Bus Route :' + (data.route ?? ''),
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'Phone Number:' + (data.phoneNumber ?? ''),
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'Email Address:' + (data.email ?? ''),
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(height: 65),
                         Container(
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                            color: Colors.deepPurpleAccent,
+                            width: 2.0,
+                          )),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Bus Name : ',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  data.busName ?? '',
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        Container(
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                            color: Colors.deepPurpleAccent,
+                            width: 2.0,
+                          )),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Bus Number : ',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  data.busNo ?? '',
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        Container(
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                            color: Colors.deepPurpleAccent,
+                            width: 2.0,
+                          )),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Bus Route : ',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  data.route ?? '',
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        Container(
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                            color: Colors.deepPurpleAccent,
+                            width: 2.0,
+                          )),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Phone : ',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  data.phoneNumber ?? '',
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        Container(
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                            color: Colors.deepPurpleAccent,
+                            width: 2.0,
+                          )),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Email : ',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  data.email ?? '',
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        const SizedBox(height: 30),
+                        Container(
+                          width: 300.0,
                           child: Align(
                             alignment: Alignment.center,
                             child: ElevatedButton(
-                              onPressed: () async {
-                                // Handle next button press
-                                await FirebaseServices().signOutUser();
-                                FirebaseAuth.instance.signOut().then((value) {
-                                  print("Signed Out");
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const Login()));
-                                });
+                              onPressed: () {
+                                /*Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const BusOperatorProfileScreen()));*/
                               },
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.deepPurple,
                                 onPrimary: Colors.white,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Text(
-                                  "Logout",
+                                  "Edit",
                                   style: TextStyle(fontSize: 18),
                                 ),
                               ),

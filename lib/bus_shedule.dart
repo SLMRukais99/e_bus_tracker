@@ -53,7 +53,7 @@ class _BusScheduleScreenState extends State<BusScheduleScreen> {
         shrinkWrap: true,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               children: [
                 SizedBox(
