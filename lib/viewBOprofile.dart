@@ -140,7 +140,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                               Text(
                                 'Bus Name : ',
                                 style: TextStyle(
-                                  fontSize: 20.0,
+                                  fontSize: 16.0,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
                                 ),
@@ -149,7 +149,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                                 child: Text(
                                   data.busName ?? '',
                                   style: TextStyle(
-                                    fontSize: 20.0,
+                                    fontSize: 16.0,
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black,
                                   ),
@@ -171,7 +171,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                               Text(
                                 'Bus Number : ',
                                 style: TextStyle(
-                                  fontSize: 20.0,
+                                  fontSize: 16.0,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
                                 ),
@@ -180,7 +180,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                                 child: Text(
                                   data.busNo ?? '',
                                   style: TextStyle(
-                                    fontSize: 20.0,
+                                    fontSize: 16.0,
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black,
                                   ),
@@ -202,7 +202,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                               Text(
                                 'Bus Route : ',
                                 style: TextStyle(
-                                  fontSize: 20.0,
+                                  fontSize: 16.0,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
                                 ),
@@ -211,7 +211,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                                 child: Text(
                                   data.route ?? '',
                                   style: TextStyle(
-                                    fontSize: 20.0,
+                                    fontSize: 16.0,
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black,
                                   ),
@@ -233,7 +233,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                               Text(
                                 'Phone : ',
                                 style: TextStyle(
-                                  fontSize: 20.0,
+                                  fontSize: 16.0,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
                                 ),
@@ -242,7 +242,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                                 child: Text(
                                   data.phoneNumber ?? '',
                                   style: TextStyle(
-                                    fontSize: 20.0,
+                                    fontSize: 16.0,
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black,
                                   ),
@@ -264,7 +264,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                               Text(
                                 'Email : ',
                                 style: TextStyle(
-                                  fontSize: 20.0,
+                                  fontSize: 16.0,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
                                 ),
@@ -273,7 +273,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                                 child: Text(
                                   data.email ?? '',
                                   style: TextStyle(
-                                    fontSize: 20.0,
+                                    fontSize: 16.0,
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black,
                                   ),
