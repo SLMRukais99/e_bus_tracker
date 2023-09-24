@@ -29,7 +29,12 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
   String? busNo = '';
   String? phone = '';
   String? email = '';
+<<<<<<< Updated upstream
   File? ImageXFile;
+=======
+  String? busName = '';
+  File? imageXFile;
+>>>>>>> Stashed changes
 
   Future _getDataFromFirestore() async {
     await FirebaseFirestore.instance
@@ -84,6 +89,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< Updated upstream
           backgroundColor: Colors.deepPurple,
           title: Text("Profile"),
           actions: []),
@@ -191,6 +197,37 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                         onPrimary: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
+=======
+        backgroundColor: Colors.deepPurple,
+        title: Text("Profile"),
+        actions: [],
+      ),
+      body: FutureBuilder(
+          future: futuredata,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else if (!snapshot.hasData || snapshot.data == null) {
+              // Handle the case where snapshot.data is null or not available
+              return Text('No data available');
+            } else {
+              final data = snapshot.data as UserDetails;
+              return ListView(
+                shrinkWrap: true,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 45.0,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 30,
+>>>>>>> Stashed changes
                         ),
                       ),
                       child: Padding(
@@ -199,6 +236,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                           "Logout",
                           style: TextStyle(fontSize: 18),
                         ),
+<<<<<<< Updated upstream
                       ),
                     ),
                   ),
@@ -209,6 +247,115 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
           ),
         ],
       ),
+=======
+                        const SizedBox(
+                          height: 5.0,
+                        ),
+                        Text(
+                          (data.name ?? ''),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Text(
+                          'Bus Name : ' + (data.busName ?? ''),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          'Bus Number : ' + (data.busNo ?? ''),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          'Bus Route : ' + (data.route ?? ''),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          'Phone Number : ' + (data.phoneNumber ?? ''),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          'Email Address : ' + (data.email ?? ''),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 65),
+                        Container(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                // Handle next button press
+                                await FirebaseServices().signOutUser();
+                                FirebaseAuth.instance.signOut().then((value) {
+                                  print("Signed Out");
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Login()));
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.deepPurple,
+                                onPrimary: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  "Logout",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20.0),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+          }),
+>>>>>>> Stashed changes
       bottomNavigationBar: BottomNavigation(
         currentIndex: _currentIndex,
         onTabTapped: (index) {
