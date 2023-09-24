@@ -5,6 +5,8 @@ class UserDetails {
   String? busNo = '';
   String? phoneNumber = '';
   String? email = '';
+  String? busName = '';
+
 
   UserDetails({
     this.profileImageURL,
@@ -13,7 +15,9 @@ class UserDetails {
     this.busNo,
     this.phoneNumber,
     this.email,
+    this.busName,
   });
+  
   UserDetails.fromJson(Map<String, dynamic> json) {
     profileImageURL = json['profileImageURL'];
     name = json['name'];
@@ -21,7 +25,9 @@ class UserDetails {
     busNo = json['busNo'];
     phoneNumber = json['phoneNumber'];
     email = json['email'];
+    busName = json['busName'];
   }
+
   Map<String, dynamic> toJson() => {
         'profileImageURL': profileImageURL,
         'name': name,
@@ -29,5 +35,7 @@ class UserDetails {
         'busNo': busNo,
         'phoneNumber': phoneNumber,
         'email': email,
+
+        'busName': busName,
       };
 }

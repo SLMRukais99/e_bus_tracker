@@ -33,6 +33,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
   String? busNo = '';
   String? phone = '';
   String? email = '';
+  String? busName = '';
   File? imageXFile;
 
   final AuthService _authService = AuthService();
@@ -54,7 +55,14 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
       body: FutureBuilder(
           future: futuredata,
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else if (!snapshot.hasData || snapshot.data == null) {
+              // Handle the case where snapshot.data is null or not available
+              return Text('No data available');
+            } else {
               final data = snapshot.data as UserDetails;
               return ListView(
                 shrinkWrap: true,
@@ -91,10 +99,21 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                           ),
                         ),
                         const SizedBox(
-                          height: 35,
+                          height: 5.0,
                         ),
                         Text(
-                          'Name :' + (data.name ?? ''),
+                          (data.name ?? ''),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Text(
+                          'Bus Name : ' + (data.busName ?? ''),
                           style: TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
@@ -184,10 +203,6 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                   ),
                 ],
               );
-            } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else {
-              return Text('error');
             }
           }),
       bottomNavigationBar: BottomNavigation(

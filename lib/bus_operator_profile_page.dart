@@ -24,6 +24,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
   TextEditingController phoneNoController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController busnoController = TextEditingController();
+  TextEditingController busNameController = TextEditingController();
 
   File? image; // Holds the selected image
   bool isLoading = false;
@@ -70,6 +71,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
     final phoneNumber = phoneNoController.text;
     final email = emailController.text;
     final busNo = busnoController.text;
+    final busName = busNameController.text;
 
     if (!_validatePhoneNumber(phoneNumber)) {
       showSnackBar('Invalid phone number');
@@ -101,6 +103,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
         'phoneNumber': phoneNumber,
         'email': email,
         'busNo': busNo,
+        'busName': busName,
         'profileImageURL': downloadURL,
       };
       await FirebaseFirestore.instance
@@ -114,6 +117,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
         phoneNoController.clear();
         emailController.clear();
         busnoController.clear();
+        busNameController.clear();
         image = null;
         isLoading = false;
       });
@@ -161,6 +165,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
     phoneNoController.dispose();
     emailController.dispose();
     busnoController.dispose();
+    busNameController.dispose();
     super.dispose();
   }
 
@@ -269,6 +274,21 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                     ),
                     SizedBox(height: 16.0),
                     TextField(
+                      controller: busNameController,
+                      decoration: InputDecoration(
+                        labelText: 'Bus Name',
+                        labelStyle: TextStyle(
+                          color: Colors.deepPurple,
+                        ),
+                        hintText: 'Enter Your Bus Name',
+                        prefixIcon: Icon(
+                          Icons.airport_shuttle,
+                          color: Colors.deepPurple,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    TextField(
                       controller: routeController,
                       decoration: InputDecoration(
                         labelText: 'Bus Route',
@@ -277,7 +297,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                         ),
                         hintText: 'Enter the bus route',
                         prefixIcon: Icon(
-                          Icons.home_outlined,
+                          Icons.route,
                           color: Colors.deepPurple,
                         ),
                       ),
@@ -314,7 +334,7 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 16.0),
+                    SizedBox(height: 10.0),
                     TextField(
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
