@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:e_bus_tracker/model/user.dart';
+import 'package:e_bus_tracker/services/getuserauth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,181 +25,29 @@ class ProfileTypeScreen extends StatefulWidget {
 class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
   int _currentIndex = 3;
 
+  late Future<UserDetails> futuredata;
+
   String? image = '';
   String? name = '';
   String? route = '';
   String? busNo = '';
   String? phone = '';
   String? email = '';
-<<<<<<< Updated upstream
-  File? ImageXFile;
-=======
   String? busName = '';
   File? imageXFile;
->>>>>>> Stashed changes
 
-  Future _getDataFromFirestore() async {
-    await FirebaseFirestore.instance
-        .collection("busOperatorProfiles")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get()
-        .then((snapshot) async {
-      if (snapshot.exists) {
-        setState(() {
-          image = snapshot.data()!["profileImageURL"];
-          name = snapshot.data()!["name"];
-          route = snapshot.data()!["route"];
-          busNo = snapshot.data()!["busNo"];
-          phone = snapshot.data()!["phoneNumber"];
-          email = snapshot.data()!["email"];
-        });
-
-        // Download and cache the image locally if available
-        /*if (image != null) {
-          final imageFile = await _downloadImage(image!);
-          setState(() {
-            ImageXFile = imageFile;
-          });
-        }*/
-      }
-    });
-  }
-
-  Future<File?> _downloadImage(String imageUrl) async {
-    try {
-      final response = await http.get(Uri.parse(imageUrl));
-      if (response.statusCode == 200) {
-        final file = File('/path_to_local_image/image.jpg');
-        await file.writeAsBytes(response.bodyBytes);
-        return file;
-      } else {
-        return null;
-      }
-    } catch (e) {
-      return null;
-    }
-  }
+  final AuthService _authService = AuthService();
 
   @override
   void initState() {
-    // TODO: implement initState
+    futuredata = AuthService().getBusOperatorProfile();
     super.initState();
-    _getDataFromFirestore();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-<<<<<<< Updated upstream
-          backgroundColor: Colors.deepPurple,
-          title: Text("Profile"),
-          actions: []),
-      body: ListView(
-        shrinkWrap: true,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 45.0), // Reduce horizontal padding
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment
-                  .center, // Make elements stretch horizontally
-              children: [
-                SizedBox(
-                  height: 30,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    //showImageDialog
-                  },
-                  child: CircleAvatar(
-                    backgroundColor: Colors.deepPurpleAccent,
-                    minRadius: 70.0,
-                    child: CircleAvatar(
-                        radius: 63.0,
-                        backgroundImage: ImageXFile == null
-                            ? NetworkImage(image!)
-                            : Image.file(ImageXFile!).image),
-                  ),
-                ),
-                const SizedBox(
-                  height: 35,
-                ),
-                Text(
-                  'Name :' + name!,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'Bus Number :' + busNo!,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'Bus Route :' + route!,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'Phone Number:' + phone!,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'Email Address:' + email!,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 65),
-                Container(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        // Handle next button press
-                        await FirebaseServices().signOutUser();
-                        FirebaseAuth.instance.signOut().then((value) {
-                          print("Signed Out");
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Login()));
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.deepPurple,
-                        onPrimary: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-=======
         backgroundColor: Colors.deepPurple,
         title: Text("Profile"),
         actions: [],
@@ -227,27 +77,27 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                       children: [
                         SizedBox(
                           height: 30,
->>>>>>> Stashed changes
                         ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Text(
-                          "Logout",
-                          style: TextStyle(fontSize: 18),
+                        GestureDetector(
+                          onTap: () {
+                            //showImageDialog
+                          },
+                          child: CircleAvatar(
+                            backgroundColor: Colors.deepPurpleAccent,
+                            minRadius: 70.0,
+                            child: CircleAvatar(
+                              radius: 63.0,
+                              backgroundImage: imageXFile == null
+                                  ? (data.profileImageURL != null &&
+                                          data.profileImageURL!.isNotEmpty
+                                      ? NetworkImage(data.profileImageURL!)
+                                      : AssetImage(
+                                              'assets/images/placeholder_image.png')
+                                          as ImageProvider)
+                                  : Image.file(imageXFile!).image,
+                            ),
+                          ),
                         ),
-<<<<<<< Updated upstream
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20.0),
-              ],
-            ),
-          ),
-        ],
-      ),
-=======
                         const SizedBox(
                           height: 5.0,
                         ),
@@ -274,7 +124,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                           height: 15,
                         ),
                         Text(
-                          'Bus Number : ' + (data.busNo ?? ''),
+                          'Bus Number :' + (data.busNo ?? ''),
                           style: TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
@@ -285,7 +135,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                           height: 15,
                         ),
                         Text(
-                          'Bus Route : ' + (data.route ?? ''),
+                          'Bus Route :' + (data.route ?? ''),
                           style: TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
@@ -296,7 +146,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                           height: 15,
                         ),
                         Text(
-                          'Phone Number : ' + (data.phoneNumber ?? ''),
+                          'Phone Number:' + (data.phoneNumber ?? ''),
                           style: TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
@@ -307,7 +157,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                           height: 15,
                         ),
                         Text(
-                          'Email Address : ' + (data.email ?? ''),
+                          'Email Address:' + (data.email ?? ''),
                           style: TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
@@ -355,7 +205,6 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
               );
             }
           }),
->>>>>>> Stashed changes
       bottomNavigationBar: BottomNavigation(
         currentIndex: _currentIndex,
         onTabTapped: (index) {

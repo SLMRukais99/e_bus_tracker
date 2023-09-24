@@ -5,12 +5,10 @@ import 'package:e_bus_tracker/navigation/bottom_navigation.dart';
 import 'package:e_bus_tracker/viewBOprofile.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:e_bus_tracker/boendtrip.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart' as gm_places;
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:location/location.dart' as location_lib;
-import 'package:url_launcher/url_launcher.dart';
 
 class PassengerHomeScreen extends StatefulWidget {
   const PassengerHomeScreen({Key? key}) : super(key: key);
@@ -29,6 +27,9 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
   late location_lib.LocationData currentLocation;
   location_lib.Location location = location_lib.Location();
   Set<Marker> markers = {};
+
+  LatLng? departureLocation;
+  LatLng? destinationLocation;
 
   TextEditingController _departureController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
@@ -63,74 +64,126 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
     }
   }
 
-  void _startJourney(LatLng destinationLatLng) async {
-    final String googleMapsUrl =
-        'https://www.google.com/maps/dir/?api=1&origin=${currentLocation.latitude},${currentLocation.longitude}&destination=${destinationLatLng.latitude},${destinationLatLng.longitude}&travelmode=driving';
-
-    if (await canLaunch(googleMapsUrl)) {
-      await launch(googleMapsUrl);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BOEndTrip(
-            startLocationLatLng: LatLng(
-              currentLocation.latitude!,
-              currentLocation.longitude!,
-            ),
-            destinationLatLng: destinationLatLng,
-          ),
+  void _setLocation(LatLng location, String locationName) {
+    setState(() {
+      markers.add(
+        Marker(
+          markerId: MarkerId(locationName),
+          position: location,
+          infoWindow: InfoWindow(title: locationName),
         ),
       );
-    } else {
-      print("Could not launch Google Maps");
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BOEndTrip(
-          startLocationLatLng: LatLng(
-            currentLocation.latitude!,
-            currentLocation.longitude!,
+    });
+  }
+
+  void _showLocationBottomSheet(
+      String title, TextEditingController controller, String locationName) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.85,
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                onPressed: () {
+                  // Use current location as the selected location
+                  _getUserLocation(true, controller, locationName);
+                  Navigator.pop(context);
+                },
+                child: Text('Use Current Location'),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  labelText: 'Enter Location',
+                ),
+              ),
+              SizedBox(height: 8),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                onPressed: () {
+                  // Handle the location input here
+                  String enteredLocation = controller.text;
+                  if (enteredLocation.isNotEmpty) {
+                    if (locationName == 'Destination Location' &&
+                        _departureController.text == enteredLocation) {
+                      _showErrorSnackBar(
+                          "Departure and destination cannot be the same.");
+                    } else if (locationName == 'Departure Location' &&
+                        _destinationController.text == enteredLocation) {
+                      _showErrorSnackBar(
+                          "Departure and destination cannot be the same.");
+                    } else {
+                      _places.searchByText(enteredLocation).then((places) {
+                        if (places != null && places.results.isNotEmpty) {
+                          final locationLatLng = LatLng(
+                            places.results.first.geometry!.location.lat,
+                            places.results.first.geometry!.location.lng,
+                          );
+                          _setLocation(locationLatLng, locationName);
+                          Navigator.pop(context);
+                        } else {
+                          _showErrorSnackBar(
+                              "No results found for the entered $locationName location.");
+                        }
+                      });
+                    }
+                  } else {
+                    _showErrorSnackBar("Please enter a location.");
+                  }
+                },
+                child: Text('OK'),
+              ),
+            ],
           ),
-          destinationLatLng: destinationLatLng,
-        ),
-      ),
+        );
+      },
     );
   }
 
-  void _onDestinationChanged(String value) async {
-    if (value.isNotEmpty) {
-      try {
-        final places = await _places.searchByText(value);
-        if (places != null && places.results.isNotEmpty) {
-          final destinationLatLng = LatLng(
-            places.results.first.geometry!.location.lat,
-            places.results.first.geometry!.location.lng,
-          );
-          setState(() {
-            markers.removeWhere(
-                (marker) => marker.markerId.value == 'destinationLocation');
-            markers.add(
-              Marker(
-                markerId: MarkerId('destinationLocation'),
-                position: destinationLatLng,
-                infoWindow: InfoWindow(title: 'Destination Location'),
-              ),
-            );
-          });
-        } else {
-          _showErrorSnackBar("No results found for the entered destination.");
-        }
-      } catch (e) {
-        _showErrorSnackBar(
-            "Error occurred while searching for the destination.");
-        print("Error searching for the destination: $e");
+  Future<void> _getUserLocation(bool isDeparture,
+      TextEditingController controller, String locationName) async {
+    try {
+      final locationData = await location.getLocation();
+      LatLng currentLatLng = LatLng(
+        locationData.latitude!,
+        locationData.longitude!,
+      );
+      if (isDeparture) {
+        departureLocation = currentLatLng;
+        controller.text = 'Your location';
+      } else {
+        destinationLocation = currentLatLng;
+        controller.text = 'Your location';
       }
-    } else {
-      setState(() {
-        markers.removeWhere(
-            (marker) => marker.markerId.value == 'destinationLocation');
-      });
+      _setLocation(currentLatLng, locationName);
+    } catch (e) {
+      print("Error getting location: $e");
     }
   }
 
@@ -175,13 +228,23 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
             Container(
               child: Column(
                 children: [
-                  TextField(
-                    controller: _departureController,
-                    onChanged: _onDestinationChanged,
-                    decoration: InputDecoration(
-                      labelText: 'Departure Location',
-                      hintText: 'Enter departure...',
-                      prefixIcon: Icon(Icons.location_on),
+                  GestureDetector(
+                    onTap: () {
+                      _showLocationBottomSheet(
+                        'Enter Departure Location',
+                        _departureController,
+                        'Departure Location',
+                      );
+                    },
+                    child: AbsorbPointer(
+                      child: TextField(
+                        controller: _departureController,
+                        decoration: InputDecoration(
+                          labelText: 'Departure Location',
+                          hintText: 'Enter departure...',
+                          prefixIcon: Icon(Icons.location_on),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -190,38 +253,36 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
             Container(
               child: Column(
                 children: [
-                  TextField(
-                    controller: _destinationController,
-                    onChanged: _onDestinationChanged,
-                    decoration: InputDecoration(
-                      labelText: 'Destination Location',
-                      hintText: 'Enter destination...',
-                      prefixIcon: Icon(Icons.location_on),
+                  GestureDetector(
+                    onTap: () {
+                      _showLocationBottomSheet(
+                        'Enter Destination Location',
+                        _destinationController,
+                        'Destination Location',
+                      );
+                    },
+                    child: AbsorbPointer(
+                      child: TextField(
+                        controller: _destinationController,
+                        decoration: InputDecoration(
+                          labelText: 'Destination Location',
+                          hintText: 'Enter destination...',
+                          prefixIcon: Icon(Icons.location_on),
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(height: 15.0),
                   SizedBox(
                     height: 50,
-                    width: 150,
+                    width: 250,
                     child: ButtonWidget(
-                      title: "Start Trip",
+                      title: "View Available Buses",
                       onPress: () {
-                        if (_destinationController.text.isEmpty) {
-                          _showErrorSnackBar("Please enter a destination.");
-                          return;
-                        }
-
-                        if (markers.isNotEmpty) {
-                          LatLng destinationLatLng = markers
-                              .where((marker) =>
-                                  marker.markerId ==
-                                  MarkerId('destinationLocation'))
-                              .first
-                              .position;
-                          _startJourney(destinationLatLng);
-                        } else {
-                          _showErrorSnackBar(
-                              "Please select a valid destination.");
+                        // Handle button press with departureLocation and destinationLocation
+                        if (departureLocation != null &&
+                            destinationLocation != null) {
+                          //_startJourney(destinationLocation!);
                         }
                       },
                     ),

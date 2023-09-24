@@ -7,6 +7,7 @@ class UserDetails {
   String? email = '';
   String? busName = '';
 
+
   UserDetails({
     this.profileImageURL,
     this.name,
@@ -16,6 +17,7 @@ class UserDetails {
     this.email,
     this.busName,
   });
+  
   UserDetails.fromJson(Map<String, dynamic> json) {
     profileImageURL = json['profileImageURL'];
     name = json['name'];
@@ -33,6 +35,7 @@ class UserDetails {
         'busNo': busNo,
         'phoneNumber': phoneNumber,
         'email': email,
+
         'busName': busName,
       };
 }
