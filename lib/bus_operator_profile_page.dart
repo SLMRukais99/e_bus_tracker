@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:e_bus_tracker/bostarttrip.dart';
 import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -121,12 +120,6 @@ class _BusOperatorProfileScreenState extends State<BusOperatorProfileScreen> {
         image = null;
         isLoading = false;
       });
-
-      // Navigate to the home screen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => BOStartTrip()),
-      );
     } catch (e) {
       // Handle any errors that occur during saving
       print('Error saving user profile: $e');

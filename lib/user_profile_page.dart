@@ -1,6 +1,8 @@
 import 'dart:io';
+
 import 'package:e_bus_tracker/phone.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -83,6 +85,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         downloadURL = await _uploadImage(imageX!);
       }
 
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+
       // Add the user profile data to Firestore
       final userProfileData = {
         'name': name,
@@ -93,7 +97,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       };
       await FirebaseFirestore.instance
           .collection('userProfiles')
-          .add(userProfileData);
+          .doc(_auth.currentUser!.uid)
+          .set(userProfileData);
 
       setState(() {
         nameController.clear();
@@ -103,8 +108,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         imageX = null;
         isLoading = false;
       });
-
-      Navigator.pushReplacementNamed(context, 'home');
     } catch (e) {
       print('Error saving user profile: $e');
 
