@@ -2,7 +2,7 @@ import 'package:e_bus_tracker/forgot_password.dart';
 import 'package:e_bus_tracker/passengerhome.dart';
 import 'package:e_bus_tracker/services/firebase_services.dart';
 import 'package:e_bus_tracker/signup.dart';
-import 'package:e_bus_tracker/bostarttrip.dart';
+import 'package:e_bus_tracker/bus_operator/bostarttrip.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
