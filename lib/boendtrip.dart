@@ -110,7 +110,7 @@ class _BOEndTripState extends State<BOEndTrip> {
   void _updateRoutePolyline() async {
     if (isLocationInitialized) {
       try {
-        String apiKey = 'AIzaSyAZ1LALf2ubP2J4gxXPlra09XPf9TCaYDE';
+        String apiKey = 'AIzaSyCFwBrFsTMKu5IrsOOiMY-Nw8y_RNA_ZwE';
         String url =
             'https://maps.googleapis.com/maps/api/directions/json?origin=${currentLocation.latitude},${currentLocation.longitude}&destination=${widget.destinationLatLng.latitude},${widget.destinationLatLng.longitude}&key=$apiKey';
 

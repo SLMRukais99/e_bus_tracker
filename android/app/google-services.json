@@ -1,44 +1,26 @@
 {
   "project_info": {
-    "project_number": "400245430250",
-    "project_id": "e-bus-tracking-system",
-    "storage_bucket": "e-bus-tracking-system.appspot.com"
+    "project_number": "649428026101",
+    "project_id": "e-bus-tracker-e6623",
+    "storage_bucket": "e-bus-tracker-e6623.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:400245430250:android:29d0f5668d1ea804f90493",
+        "mobilesdk_app_id": "1:649428026101:android:9b68c6e9f83604d8e33bbc",
         "android_client_info": {
           "package_name": "com.example.e_bus_tracker"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "400245430250-pict41v1dmnhquoamqt7rroi906khfa4.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.e_bus_tracker",
-            "certificate_hash": "44b0f4e57191ea2db880a939cfe88b8b152b3eb3"
-          }
-        },
-        {
-          "client_id": "400245430250-gc49815qunmoke478f2a61vrt7gpg9od.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAZ1LALf2ubP2J4gxXPlra09XPf9TCaYDE"
+          "current_key": "AIzaSyAmY6p1lDzy0mHCvohzOIaDXB7eom5h5qM"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "400245430250-gc49815qunmoke478f2a61vrt7gpg9od.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

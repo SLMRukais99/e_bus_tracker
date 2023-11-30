@@ -34,7 +34,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
   TextEditingController _departureController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
   gm_places.GoogleMapsPlaces _places = gm_places.GoogleMapsPlaces(
-      apiKey: "AIzaSyAZ1LALf2ubP2J4gxXPlra09XPf9TCaYDE");
+      apiKey: "AIzaSyCFwBrFsTMKu5IrsOOiMY-Nw8y_RNA_ZwE");
 
   @override
   void initState() {
