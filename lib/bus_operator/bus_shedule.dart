@@ -1,11 +1,11 @@
-import 'package:e_bus_tracker/ratings.dart';
+import 'package:e_bus_tracker/bus_operator/ratings.dart';
 import 'package:e_bus_tracker/widget/crad_todo_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_bus_tracker/common/show_model.dart';
 import 'bostarttrip.dart';
-import 'navigation/bottom_navigation.dart';
+import 'package:e_bus_tracker/bus_operator/navigation/bottom_navigation.dart';
 import 'viewBOprofile.dart';
 
 class BusScheduleScreen extends StatefulWidget {
