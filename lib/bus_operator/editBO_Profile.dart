@@ -27,6 +27,10 @@ class _BusOperatorProfileEditScreenState
 
   late File _selectedImage;
 
+  get imageXFile => null;
+
+  get as => null;
+
   @override
   void initState() {
     futureData = AuthService().getBusOperatorProfile();
@@ -86,16 +90,14 @@ class _BusOperatorProfileEditScreenState
                           minRadius: 70.0,
                           child: CircleAvatar(
                             radius: 67.0,
-                            //THERE IS AN ERROR HERE. SOMEONE PLZ SOLVE IT!!!
-
-                            /*backgroundImage: _selectedImage != null
-                                ? FileImage(_selectedImage)
-                                : data.profileImageURL != null &&
+                            backgroundImage: imageXFile == null
+                                ? (data.profileImageURL != null &&
                                         data.profileImageURL!.isNotEmpty
                                     ? NetworkImage(data.profileImageURL!)
                                     : AssetImage(
                                             'assets/images/placeholder_image.png')
-                                        as ImageProvider,*/
+                                        as ImageProvider)
+                                : Image.file(imageXFile!).image,
                           ),
                         ),
                         IconButton(

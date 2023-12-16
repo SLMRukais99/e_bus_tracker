@@ -1,5 +1,5 @@
 import 'package:e_bus_tracker/forgot_password.dart';
-import 'package:e_bus_tracker/passengerhome.dart';
+import 'package:e_bus_tracker/passenger/passengerhome.dart';
 import 'package:e_bus_tracker/services/firebase_services.dart';
 import 'package:e_bus_tracker/signup.dart';
 import 'package:e_bus_tracker/bus_operator/bostarttrip.dart';
