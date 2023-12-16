@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'bus_shedule.dart';
+import 'editBO_Profile.dart';
 import 'navigation/bottom_navigation.dart';
 
 class ProfileTypeScreen extends StatefulWidget {
@@ -290,11 +291,11 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                             alignment: Alignment.center,
                             child: ElevatedButton(
                               onPressed: () {
-                                /*Navigator.push(
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const BusOperatorProfileScreen()));*/
+                                            const BusOperatorProfileEditScreen()));
                               },
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.deepPurple,
