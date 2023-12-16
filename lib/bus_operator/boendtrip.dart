@@ -11,6 +11,8 @@ import 'package:e_bus_tracker/bus_operator/bostarttrip.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'ratings.dart';
 
@@ -44,13 +46,22 @@ class _BOEndTripState extends State<BOEndTrip> {
   late PolylinePoints polylinePoints;
   List<LatLng> routeCoordinates = []; // List to store route coordinates
 
+  late DatabaseReference _locationRef; // Firebase Realtime Database reference
+
   @override
   void initState() {
     super.initState();
+    _initFirebase();
     _initMap();
     _startLocationTracking();
     _getCurrentLocation(); // Initialize currentLocation
     polylinePoints = PolylinePoints(); // Initialize PolylinePoints
+  }
+
+  // Initialize Firebase
+  void _initFirebase() async {
+    await Firebase.initializeApp();
+    _locationRef = FirebaseDatabase.instance.reference().child('locations');
   }
 
   void _initMap() {
@@ -77,6 +88,12 @@ class _BOEndTripState extends State<BOEndTrip> {
       currentLocation = newLocation;
       _updateCurrentLocationMarker();
       _updateRoutePolyline(); // Call method to update route polyline
+
+      // Store current location in Firebase Realtime Database
+      _locationRef.child('current_location').set({
+        'latitude': currentLocation.latitude,
+        'longitude': currentLocation.longitude,
+      });
     });
   }
 
