@@ -2,7 +2,7 @@ import 'package:e_bus_tracker/bus_operator/bostarttrip.dart';
 import 'package:e_bus_tracker/bus_operator/bus_operator_profile_page.dart';
 import 'package:e_bus_tracker/login.dart';
 import 'package:e_bus_tracker/services/firebase_services.dart';
-import 'package:e_bus_tracker/user_profile_page.dart';
+import 'package:e_bus_tracker/passenger/user_profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'bus_shedule.dart';
