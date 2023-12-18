@@ -224,7 +224,7 @@ class _BOEndTripState extends State<BOEndTrip> {
                 ],
               ),
             ),
-            SizedBox(height: 30.0),
+            SizedBox(height: 160.0),
             BottomNavigation(
               currentIndex: _currentIndex,
               onTabTapped: (index) {
