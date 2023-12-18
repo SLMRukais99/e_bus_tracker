@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:e_bus_tracker/model/passenger.dart';
+import 'package:e_bus_tracker/passenger/edit_Passenger_Profile.dart';
 import 'package:e_bus_tracker/passenger/passengerhome.dart';
 import 'package:e_bus_tracker/services/getuserauth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -256,11 +257,11 @@ class _ProfileTypeScreenPState extends State<ProfileTypeScreenP> {
                             alignment: Alignment.center,
                             child: ElevatedButton(
                               onPressed: () {
-                                /*Navigator.push(
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const BusOperatorProfileEditScreen()));*/
+                                            const PassengerProfileEditScreen()));
                               },
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.deepPurple,
