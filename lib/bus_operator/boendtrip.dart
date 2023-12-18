@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:e_bus_tracker/bus_operator/bus_shedule.dart';
 import 'package:e_bus_tracker/bus_operator/navigation/bottom_navigation.dart';
 import 'package:e_bus_tracker/bus_operator/viewBOprofile.dart';
+import 'package:e_bus_tracker/model/user.dart';
+import 'package:e_bus_tracker/services/getuserauth.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -48,12 +50,20 @@ class _BOEndTripState extends State<BOEndTrip> {
 
   late DatabaseReference _locationRef; // Firebase Realtime Database reference
 
+  late Future<UserDetails> futuredata;
+
+  String? busNo = '';
+  String? busName = '';
+
+  final AuthService _authService = AuthService();
+
   @override
   void initState() {
     super.initState();
     _initFirebase();
     _initMap();
     _startLocationTracking();
+    _getBusOperatorDetails();
     _getCurrentLocation(); // Initialize currentLocation
     polylinePoints = PolylinePoints(); // Initialize PolylinePoints
   }
@@ -90,7 +100,7 @@ class _BOEndTripState extends State<BOEndTrip> {
       _updateRoutePolyline(); // Call method to update route polyline
 
       // Store current location in Firebase Realtime Database
-      _locationRef.child('current_location').set({
+      _locationRef.child('current_buslocation').set({
         'latitude': currentLocation.latitude,
         'longitude': currentLocation.longitude,
       });
@@ -98,15 +108,16 @@ class _BOEndTripState extends State<BOEndTrip> {
   }
 
   void _updateCurrentLocationMarker() {
-    markers.removeWhere((marker) => marker.markerId.value == 'currentLocation');
+    markers
+        .removeWhere((marker) => marker.markerId.value == 'currentBusLocation');
     markers.add(
       Marker(
-        markerId: MarkerId('currentLocation'),
+        markerId: MarkerId('currentBusLocation'),
         position: LatLng(
           currentLocation.latitude ?? 0,
           currentLocation.longitude ?? 0,
         ),
-        infoWindow: InfoWindow(title: 'Current Location'),
+        infoWindow: InfoWindow(title: 'Current Bus Location'),
       ),
     );
     setState(() {});
@@ -159,6 +170,25 @@ class _BOEndTripState extends State<BOEndTrip> {
       } catch (e) {
         print("Error updating route: $e");
       }
+    }
+  }
+
+  // Fetch bus operator details from Cloud Firestore
+  void _getBusOperatorDetails() async {
+    try {
+      UserDetails userDetails = await _authService.getBusOperatorProfile();
+      setState(() {
+        busNo = userDetails.busNo;
+        busName = userDetails.busName;
+      });
+
+      // Store bus details in Firebase Realtime Database
+      _locationRef.child('busdetails').set({
+        'busNo': busNo,
+        'busName': busName,
+      });
+    } catch (e) {
+      print('Error fetching bus operator details: $e');
     }
   }
 

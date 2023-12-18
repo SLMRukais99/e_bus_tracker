@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:e_bus_tracker/bus_operator/bus_shedule.dart';
 import 'package:e_bus_tracker/bus_operator/navigation/bottom_navigation.dart';
 import 'package:e_bus_tracker/bus_operator/viewBOprofile.dart';
+import 'package:e_bus_tracker/passenger/location_track.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -19,6 +20,9 @@ class PassengerHomeScreen extends StatefulWidget {
 
 class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
   int _currentIndex = 0;
+
+  LatLng? selectedDepartureLocation;
+  LatLng? selectedDestinationLocation;
 
   final Completer<GoogleMapController> _controllerGoogleMap =
       Completer<GoogleMapController>();
@@ -44,6 +48,14 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
       'longitude': 0.0,
     });
     _getCurrentLocation();
+    setCustomMarker();
+  }
+
+  late BitmapDescriptor mapMarker;
+
+  void setCustomMarker() async {
+    mapMarker = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/images/startlocation_marker.png');
   }
 
   Future<void> _getCurrentLocation() async {
@@ -55,6 +67,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
             markerId: MarkerId('currentLocation'),
             position: LatLng(
                 currentLocation.latitude ?? 0, currentLocation.longitude ?? 0),
+            icon: mapMarker,
             infoWindow: InfoWindow(title: 'Start Location'),
           ),
         );
@@ -64,7 +77,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
     }
   }
 
-  void _setLocation(LatLng location, String locationName) {
+  void _setLocation(LatLng location, String locationName, bool isdep) {
     setState(() {
       markers.add(
         Marker(
@@ -73,11 +86,17 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
           infoWindow: InfoWindow(title: locationName),
         ),
       );
+
+      if (isdep == true) {
+        selectedDepartureLocation = location;
+      } else {
+        selectedDestinationLocation = location;
+      }
     });
   }
 
-  void _showLocationBottomSheet(
-      String title, TextEditingController controller, String locationName) {
+  void _showLocationBottomSheet(bool isDepature, String title,
+      TextEditingController controller, String locationName) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -145,7 +164,8 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                             places.results.first.geometry!.location.lat,
                             places.results.first.geometry!.location.lng,
                           );
-                          _setLocation(locationLatLng, locationName);
+                          _setLocation(
+                              locationLatLng, locationName, isDepature);
                           Navigator.pop(context);
                         } else {
                           _showErrorSnackBar(
@@ -166,8 +186,11 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
     );
   }
 
-  Future<void> _getUserLocation(bool isDeparture,
-      TextEditingController controller, String locationName) async {
+  void _getUserLocation(
+    bool isDeparture,
+    TextEditingController controller,
+    String locationName,
+  ) async {
     try {
       final locationData = await location.getLocation();
       LatLng currentLatLng = LatLng(
@@ -175,15 +198,38 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
         locationData.longitude!,
       );
       if (isDeparture) {
-        departureLocation = currentLatLng;
+        selectedDepartureLocation =
+            currentLatLng; // Update selectedDepartureLocation
         controller.text = 'Your location';
       } else {
-        destinationLocation = currentLatLng;
+        selectedDestinationLocation =
+            currentLatLng; // Update selectedDestinationLocation
         controller.text = 'Your location';
       }
-      _setLocation(currentLatLng, locationName);
+      _setLocation(currentLatLng, locationName, isDeparture);
     } catch (e) {
       print("Error getting location: $e");
+    }
+  }
+
+  void _navigateToLocationTrack() {
+    print(selectedDepartureLocation);
+    print(selectedDestinationLocation);
+
+    if (selectedDepartureLocation != null &&
+        selectedDestinationLocation != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LocationTrack(
+            departureLocationLatLng: selectedDepartureLocation!,
+            destinationLatLng: selectedDestinationLocation!,
+          ),
+        ),
+      );
+    } else {
+      _showErrorSnackBar(
+          "Please enter both departure and destination locations.");
     }
   }
 
@@ -231,6 +277,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                   GestureDetector(
                     onTap: () {
                       _showLocationBottomSheet(
+                        true,
                         'Enter Departure Location',
                         _departureController,
                         'Departure Location',
@@ -256,6 +303,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                   GestureDetector(
                     onTap: () {
                       _showLocationBottomSheet(
+                        false,
                         'Enter Destination Location',
                         _destinationController,
                         'Destination Location',
@@ -272,19 +320,19 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    "Press on 'Target Icon Button' in the map to get \nyour current location.",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
                   SizedBox(height: 15.0),
                   SizedBox(
                     height: 50,
                     width: 250,
                     child: ButtonWidget(
                       title: "View Available Buses",
-                      onPress: () {
-                        // Handle button press with departureLocation and destinationLocation
-                        if (departureLocation != null &&
-                            destinationLocation != null) {
-                          //_startJourney(destinationLocation!);
-                        }
-                      },
+                      onPress: _navigateToLocationTrack,
                     ),
                   ),
                 ],

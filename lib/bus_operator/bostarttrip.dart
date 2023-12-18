@@ -214,7 +214,7 @@ class _BOStartTripState extends State<BOStartTrip> {
               ),
             ],
           ),
-          SizedBox(height: 90.0),
+          SizedBox(height: 15.0),
           BottomNavigation(
             currentIndex: _currentIndex,
             onTabTapped: (index) {
