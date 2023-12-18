@@ -339,7 +339,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 147.0),
+            SizedBox(height: 90.0),
             BottomNavigation(
               currentIndex: _currentIndex,
               onTabTapped: (index) {
