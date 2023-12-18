@@ -1,4 +1,5 @@
 import 'package:e_bus_tracker/model/user.dart';
+import 'package:e_bus_tracker/model/passenger.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -19,7 +20,6 @@ class AuthService {
     return null;
   }
 
-  // Get the bus operator profile for the current user
   Future<UserDetails> getBusOperatorProfile() async {
     final userRef = await FirebaseFirestore.instance
         .collection('busOperatorProfiles')
@@ -30,6 +30,24 @@ class AuthService {
     try {
       final UserDetails ud =
           UserDetails.fromJson(userRef.data() as Map<String, dynamic>);
+      return ud;
+    } catch (e) {
+      print('error');
+      throw (e);
+    }
+  }
+
+  // Get the user profile for the current user
+  Future<UserDetailsP> getUserProfile() async {
+    final userRef = await FirebaseFirestore.instance
+        .collection('userProfiles')
+        .doc(_auth.currentUser!.uid)
+        .get();
+    print(userRef.data());
+
+    try {
+      final UserDetailsP ud =
+          UserDetailsP.fromJson(userRef.data() as Map<String, dynamic>);
       return ud;
     } catch (e) {
       print('error');
