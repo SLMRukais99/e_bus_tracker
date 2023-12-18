@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:e_bus_tracker/bus_operator/bus_shedule.dart';
 import 'package:e_bus_tracker/bus_operator/navigation/bottom_navigation.dart';
 import 'package:e_bus_tracker/bus_operator/ratings.dart';
