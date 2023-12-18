@@ -31,7 +31,6 @@ class _ProfileTypeScreenPState extends State<ProfileTypeScreenP> {
   String? home = '';
   String? phone = '';
   String? email = '';
-
   File? imageXFile;
 
   final AuthService _authService = AuthService();

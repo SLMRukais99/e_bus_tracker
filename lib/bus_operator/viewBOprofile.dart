@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:e_bus_tracker/model/user.dart';
+import 'package:e_bus_tracker/passenger/passengerhome.dart';
 import 'package:e_bus_tracker/services/getuserauth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
@@ -332,7 +333,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const BOStartTrip(),
+                  builder: (context) => const PassengerHomeScreen(),
                 ),
               );
             } else if (index == 1) {

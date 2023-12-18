@@ -4,6 +4,7 @@ import 'package:e_bus_tracker/bus_operator/bus_shedule.dart';
 import 'package:e_bus_tracker/bus_operator/navigation/bottom_navigation.dart';
 import 'package:e_bus_tracker/bus_operator/viewBOprofile.dart';
 import 'package:e_bus_tracker/passenger/location_track.dart';
+import 'package:e_bus_tracker/passenger/view_Passenger_Profile.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -360,7 +361,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ProfileTypeScreen(),
+                        builder: (context) => const ProfileTypeScreenP(),
                       ),
                     );
                   }

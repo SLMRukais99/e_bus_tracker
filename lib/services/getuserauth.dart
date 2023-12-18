@@ -21,15 +21,15 @@ class AuthService {
   }
 
   Future<UserDetails> getBusOperatorProfile() async {
-    final userRef = await FirebaseFirestore.instance
+    final userRef1 = await FirebaseFirestore.instance
         .collection('busOperatorProfiles')
         .doc(_auth.currentUser!.uid)
         .get();
-    print(userRef.data());
+    print(userRef1.data());
 
     try {
       final UserDetails ud =
-          UserDetails.fromJson(userRef.data() as Map<String, dynamic>);
+          UserDetails.fromJson(userRef1.data() as Map<String, dynamic>);
       return ud;
     } catch (e) {
       print('error');
@@ -39,15 +39,15 @@ class AuthService {
 
   // Get the user profile for the current user
   Future<UserDetailsP> getUserProfile() async {
-    final userRef = await FirebaseFirestore.instance
+    final userRef2 = await FirebaseFirestore.instance
         .collection('userProfiles')
         .doc(_auth.currentUser!.uid)
         .get();
-    print(userRef.data());
+    print(userRef2.data());
 
     try {
       final UserDetailsP ud =
-          UserDetailsP.fromJson(userRef.data() as Map<String, dynamic>);
+          UserDetailsP.fromJson(userRef2.data() as Map<String, dynamic>);
       return ud;
     } catch (e) {
       print('error');
