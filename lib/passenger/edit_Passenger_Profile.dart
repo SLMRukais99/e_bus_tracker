@@ -1,11 +1,9 @@
 import 'package:e_bus_tracker/model/passenger.dart';
+import 'package:e_bus_tracker/passenger/view_Passenger_Profile.dart';
 import 'package:flutter/material.dart';
 import 'package:e_bus_tracker/services/getuserauth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:flutter/services.dart'; // Add this import for rootBundle
-
-import '../model/user.dart';
 
 class PassengerProfileEditScreen extends StatefulWidget {
   const PassengerProfileEditScreen({Key? key}) : super(key: key);
@@ -35,11 +33,6 @@ class _PassengerProfileEditScreenState
   void initState() {
     futureData = AuthService().getUserProfile();
     super.initState();
-    data = UserDetailsP();
-    _selectedImage =
-        data.profileImageURL != null && data.profileImageURL!.isNotEmpty
-            ? File(data.profileImageURL!)
-            : File('assets/images/placeholder_image.png');
   }
 
   Future<void> _pickImage() async {
@@ -50,6 +43,33 @@ class _PassengerProfileEditScreenState
         _selectedImage = File(pickedFile.path);
       });
     }
+  }
+
+  Future<void> _updateProfile() async {
+    await AuthService().updatePassengerProfile(
+      UserDetailsP(
+        profileImageURL: _selectedImage != null
+            ? 'gs://e-bus-tracker-e6623.appspot.com/user_profile_images' // Replace 'URL' with the actual URL or upload to Firestore Storage
+            : data.profileImageURL,
+        name: _nameController.text,
+        homeAddress: _addressController.text,
+        phoneNumber: _phoneController.text,
+        email: _emailController.text,
+      ),
+    );
+
+    // After updating, refresh the data and show it on the screen
+    setState(() {
+      futureData = AuthService().getUserProfile();
+    });
+  }
+
+  void _navigateToProfileScreen() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => ProfileTypeScreenP(),
+      ),
+    );
   }
 
   @override
@@ -75,6 +95,8 @@ class _PassengerProfileEditScreenState
               _addressController.text = data.homeAddress ?? '';
               _phoneController.text = data.phoneNumber ?? '';
               _emailController.text = data.email ?? '';
+              _selectedImage = File(data.profileImageURL ??
+                  'assets/images/placeholder_image.png');
 
               return Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -150,21 +172,14 @@ class _PassengerProfileEditScreenState
                       child: Align(
                         alignment: Alignment.center,
                         child: ElevatedButton(
-                          onPressed: () {
-                            // Implement logic to update profile in Firestore
-                            // You may want to call a function from your AuthService
-                            // to handle the update operation.
-                            /*AuthService().updateProfile(
-                            UserDetails(
-                              profileImageURL:
-                                  _selectedImage != null ? 'URL' : data.profileImageURL,
-                              name: _busNameController.text,
-                              route: _routeController.text,
-                              busNo: _busNoController.text,
-                              phoneNumber: _phoneController.text,
-                              email: _emailController.text,
-                            ),
-                          );*/
+                          onPressed: () async {
+                            if (_selectedImage != null) {
+                              await _updateProfile();
+                              _navigateToProfileScreen();
+                            } else {
+                              // Handle the case when no image is selected
+                              print('No image selected');
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.deepPurple,

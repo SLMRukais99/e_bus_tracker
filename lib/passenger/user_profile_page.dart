@@ -38,11 +38,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   Future<String?> _uploadImage(File imageX) async {
     try {
+      // Generate a unique filename for each uploaded image
+      final uniqueFileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
       // Upload the image to Firebase Storage
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('user_profile_images')
-          .child('image.jpg');
+          .child(uniqueFileName);
       final uploadTask = storageRef.putFile(imageX);
 
       // Get the download URL

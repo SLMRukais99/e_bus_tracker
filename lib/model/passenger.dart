@@ -15,7 +15,7 @@ class UserDetailsP {
 
   UserDetailsP.fromJson(Map<String, dynamic> json) {
     profileImageURL = json['profileImageURL'];
-    name = json['name'];
+    name = json['Name'];
     email = json['email'];
     homeAddress = json['homeAddress'];
     phoneNumber = json['phoneNumber'];
@@ -23,7 +23,7 @@ class UserDetailsP {
 
   Map<String, dynamic> toJson() => {
         'profileImageURL': profileImageURL,
-        'name': name,
+        'Name': name,
         'email': email,
         'homeAddress': homeAddress,
         'phoneNumber': phoneNumber,

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:e_bus_tracker/bus_operator/bus_shedule.dart';
 import 'package:e_bus_tracker/bus_operator/navigation/bottom_navigation.dart';
 import 'package:e_bus_tracker/bus_operator/viewBOprofile.dart';
-import 'package:e_bus_tracker/model/user.dart';
+import 'package:e_bus_tracker/model/busoperator.dart';
 import 'package:e_bus_tracker/services/getuserauth.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:e_bus_tracker/model/user.dart';
+import 'package:e_bus_tracker/model/busoperator.dart';
 import 'package:e_bus_tracker/passenger/passengerhome.dart';
 import 'package:e_bus_tracker/services/getuserauth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -109,10 +109,12 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
                                   ? (data.profileImageURL != null &&
                                           data.profileImageURL!.isNotEmpty
                                       ? NetworkImage(data.profileImageURL!)
+                                          as ImageProvider<Object>
                                       : AssetImage(
                                               'assets/images/placeholder_image.png')
-                                          as ImageProvider)
-                                  : Image.file(imageXFile!).image,
+                                          as ImageProvider<Object>)
+                                  : FileImage(imageXFile!)
+                                      as ImageProvider<Object>,
                             ),
                           ),
                         ),
@@ -333,7 +335,7 @@ class _ProfileTypeScreenState extends State<ProfileTypeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const PassengerHomeScreen(),
+                  builder: (context) => const BOStartTrip(),
                 ),
               );
             } else if (index == 1) {

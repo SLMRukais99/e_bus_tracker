@@ -1,10 +1,10 @@
+import 'package:e_bus_tracker/bus_operator/viewBOprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:e_bus_tracker/services/getuserauth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:flutter/services.dart'; // Add this import for rootBundle
 
-import '../model/user.dart';
+import '../model/busoperator.dart';
 
 class BusOperatorProfileEditScreen extends StatefulWidget {
   const BusOperatorProfileEditScreen({Key? key}) : super(key: key);
@@ -35,11 +35,6 @@ class _BusOperatorProfileEditScreenState
   void initState() {
     futureData = AuthService().getBusOperatorProfile();
     super.initState();
-    data = UserDetails();
-    _selectedImage =
-        data.profileImageURL != null && data.profileImageURL!.isNotEmpty
-            ? File(data.profileImageURL!)
-            : File('assets/images/placeholder_image.png');
   }
 
   Future<void> _pickImage() async {
@@ -50,6 +45,34 @@ class _BusOperatorProfileEditScreenState
         _selectedImage = File(pickedFile.path);
       });
     }
+  }
+
+  Future<void> _updateProfile() async {
+    await AuthService().updateBusOperatorProfile(
+      UserDetails(
+        profileImageURL: _selectedImage != null
+            ? 'gs://e-bus-tracker-e6623.appspot.com/bus_operator_profile_images' // Replace 'URL' with the actual URL or upload to Firestore Storage
+            : data.profileImageURL,
+        busName: _busNameController.text,
+        busNo: _busNoController.text,
+        route: _routeController.text,
+        phoneNumber: _phoneController.text,
+        email: _emailController.text,
+      ),
+    );
+
+    // After updating, refresh the data and show it on the screen
+    setState(() {
+      futureData = AuthService().getBusOperatorProfile();
+    });
+  }
+
+  void _navigateToProfileScreen() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => ProfileTypeScreen(),
+      ),
+    );
   }
 
   @override
@@ -76,6 +99,8 @@ class _BusOperatorProfileEditScreenState
               _routeController.text = data.route ?? '';
               _phoneController.text = data.phoneNumber ?? '';
               _emailController.text = data.email ?? '';
+              _selectedImage = File(data.profileImageURL ??
+                  'assets/images/placeholder_image.png');
 
               return Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -161,21 +186,14 @@ class _BusOperatorProfileEditScreenState
                       child: Align(
                         alignment: Alignment.center,
                         child: ElevatedButton(
-                          onPressed: () {
-                            // Implement logic to update profile in Firestore
-                            // You may want to call a function from your AuthService
-                            // to handle the update operation.
-                            /*AuthService().updateProfile(
-                            UserDetails(
-                              profileImageURL:
-                                  _selectedImage != null ? 'URL' : data.profileImageURL,
-                              name: _busNameController.text,
-                              route: _routeController.text,
-                              busNo: _busNoController.text,
-                              phoneNumber: _phoneController.text,
-                              email: _emailController.text,
-                            ),
-                          );*/
+                          onPressed: () async {
+                            if (_selectedImage != null) {
+                              await _updateProfile();
+                              _navigateToProfileScreen();
+                            } else {
+                              // Handle the case when no image is selected
+                              print('No image selected');
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.deepPurple,
