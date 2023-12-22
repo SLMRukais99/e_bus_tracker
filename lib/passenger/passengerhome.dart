@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:e_bus_tracker/bus_operator/bus_shedule.dart';
 import 'package:e_bus_tracker/bus_operator/navigation/bottom_navigation.dart';
-import 'package:e_bus_tracker/bus_operator/viewBOprofile.dart';
 import 'package:e_bus_tracker/passenger/location_track.dart';
+import 'package:e_bus_tracker/passenger/pRatings.dart';
+import 'package:e_bus_tracker/passenger/viewSchedule.dart';
 import 'package:e_bus_tracker/passenger/view_Passenger_Profile.dart';
 import 'package:e_bus_tracker/widget/button_widget.dart';
 import 'package:flutter/material.dart';
@@ -347,16 +347,28 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                   _currentIndex = index;
                   if (index == 0) {
                     // Navigate to home
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PassengerHomeScreen(),
+                      ),
+                    );
                   } else if (index == 1) {
                     // Navigate to schedule
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const BusScheduleScreen(),
+                        builder: (context) => const PassengerScheduleScreen(),
                       ),
                     );
                   } else if (index == 2) {
                     // Navigate to star
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PRatingScreen(),
+                      ),
+                    );
                   } else if (index == 3) {
                     Navigator.push(
                       context,

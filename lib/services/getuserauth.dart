@@ -118,7 +118,7 @@ class AuthService {
 
       // Update other profile fields in Firestore
       await userDocRef.update({
-        'Name': updatedProfile.name,
+        'name': updatedProfile.name,
         'homeAddress': updatedProfile.homeAddress,
         'phoneNumber': updatedProfile.phoneNumber,
         'email': updatedProfile.email,

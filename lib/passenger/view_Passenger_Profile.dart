@@ -1,18 +1,18 @@
 import 'dart:io';
 import 'package:e_bus_tracker/model/passenger.dart';
 import 'package:e_bus_tracker/passenger/edit_Passenger_Profile.dart';
+import 'package:e_bus_tracker/passenger/pRatings.dart';
 import 'package:e_bus_tracker/passenger/passengerhome.dart';
+import 'package:e_bus_tracker/passenger/viewSchedule.dart';
 import 'package:e_bus_tracker/services/getuserauth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_bus_tracker/login.dart';
-import 'package:e_bus_tracker/bus_operator/ratings.dart';
 import 'package:e_bus_tracker/services/firebase_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
-import '../bus_operator/bus_shedule.dart';
 import '../bus_operator/navigation/bottom_navigation.dart';
 
 class ProfileTypeScreenP extends StatefulWidget {
@@ -306,7 +306,7 @@ class _ProfileTypeScreenPState extends State<ProfileTypeScreenP> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const BusScheduleScreen(),
+                  builder: (context) => const PassengerScheduleScreen(),
                 ),
               );
             } else if (index == 2) {
@@ -314,7 +314,7 @@ class _ProfileTypeScreenPState extends State<ProfileTypeScreenP> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const RatingScreen(),
+                  builder: (context) => const PRatingScreen(),
                 ),
               );
             } else if (index == 3) {
